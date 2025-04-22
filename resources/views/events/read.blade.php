@@ -152,7 +152,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- History Card 1 -->
-                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-gray-50">
+                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
                         <div class="p-4">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-medium">Kickoff Meeting</h4>
@@ -168,7 +168,7 @@
                     </div>
 
                     <!-- History Card 2 -->
-                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-gray-50">
+                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
                         <div class="p-4">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-medium">Client Requirements</h4>
@@ -184,7 +184,7 @@
                     </div>
 
                     <!-- History Card 3 -->
-                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-gray-50">
+                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
                         <div class="p-4">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-medium">Design Review</h4>
