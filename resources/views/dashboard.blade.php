@@ -102,11 +102,12 @@
                                 <td class="py-2">Agvin</td>
                                 <td class="py-2"><a href="#" class="text-blue-500 text-sm">Add</a></td>
                                 <td class="py-2">
-                                    @if (false) {{-- Ganti dengan kondisi real evidence --}}
-                                        <a href="#" class="text-blue-500 text-sm">Lihat</a>
-                                    @else
-                                        <span class="text-gray-500 text-sm">Belum tersedia</span>
-                                    @endif
+                                @if (false) {{-- Ganti dengan kondisi real evidence --}}
+                                    <a href="#" class="text-blue-500 text-sm">Lihat</a>
+                                @else
+                                    <span class="text-gray-500 text-sm">Belum tersedia</span>
+                                @endif
+
                                 </td>
                             </tr>
                             <tr class="border-b">
@@ -143,8 +144,8 @@
                     </table>
 
                     <div class="flex justify-end mt-4">
-                        <a href="{{ route('tasks') }}"
-                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">View All</a>
+                        <a href="{{ route('tasks') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">View All</a>
+
                     </div>
                 </div>
 
