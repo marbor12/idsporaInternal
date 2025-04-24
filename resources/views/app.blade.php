@@ -13,6 +13,12 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Hero Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/heroicons@1.0.0/outline.css" rel="stylesheet">
+
+    <!-- chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-50">
