@@ -13,6 +13,9 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Hero Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/heroicons@1.0.0/outline.css" rel="stylesheet">
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-50">
