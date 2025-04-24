@@ -48,8 +48,45 @@ class FinanceController extends Controller
         }, 0);
 
         $netBalance = $totalRevenue - $totalExpenses;
+        // Data untuk grafik ringkasan keuangan (bar chart)
+        $monthlyData = [
+            ['month' => 'Jan', 'revenue' => 0, 'expenses' => 0],
+            ['month' => 'Feb', 'revenue' => 0, 'expenses' => 500000], // Biaya Wifi pada Feb
+            ['month' => 'Mar', 'revenue' => 0, 'expenses' => 0],
+            ['month' => 'Apr', 'revenue' => 2000000, 'expenses' => 0], // Fee event pada Apr
+            ['month' => 'Mei', 'revenue' => 0, 'expenses' => 0],
+            ['month' => 'Jun', 'revenue' => 0, 'expenses' => 0],
+        ];
 
-        return view('finance.read', ['transaction' => $transactions, 'totalRevenue' => $totalRevenue, 'totalExpenses' => $totalExpenses, 'netBalance' => $netBalance]);
+        // Data untuk grafik komposisi expenses (pie chart)
+        $expenseData = [];
+        $expensesByCategory = [];
+        
+        foreach ($transactions as $transaction) {
+            if ($transaction['category'] === 'expenses') {
+                $subkategori = $transaction['subcategory'];
+                if (!isset($expensesByCategory[$subkategori])) {
+                    $expensesByCategory[$subkategori] = 0;
+                }
+                $expensesByCategory[$subkategori] += (int) $transaction['amount'];
+            }
+        }
+        
+        foreach ($expensesByCategory as $kategori => $nilai) {
+            $expenseData[] = [
+                'kategori' => $kategori,
+                'nilai' => $nilai
+            ];
+        }
+
+        return view('finance.read', [
+            'transaction' => $transactions,
+            'totalRevenue' => $totalRevenue,
+            'totalExpenses' => $totalExpenses,
+            'netBalance' => $netBalance,
+            'monthlyData' => $monthlyData,
+            'expenseData' => $expenseData,
+        ]);
     }
 
     public function create()

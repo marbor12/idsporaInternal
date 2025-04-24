@@ -82,13 +82,20 @@
       <!-- Placeholder grafik -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-white p-5 rounded-lg border">
-          <h2 class="text-lg font-semibold mb-2">Ringkasan Keuangan</h2>
-          <div class="h-48 bg-gray-100 flex items-center justify-center text-gray-400">
-            (Grafik Placeholder)
+          <h2 class="text-lg font-semibold mb-2">Financial Summary</h2>
+          <div class="h-auto bg-gray-100 flex items-center justify-center text-gray-400">
+            <div class="h-[400px]">
+              <canvas id="financialSummaryChart"></canvas>
+            </div>
           </div>
         </div>
         <div class="bg-white p-5 rounded-lg border">
-          <h2 class="text-lg font-semibold mb-2">Komposisi Pengeluaran</h2>
+          <h2 class="text-lg font-semibold mb-2">Expense Composition</h2>
+          <div class=" flex items-center justify-center text-gray-400">
+            <div class="h-[400px]">
+              <canvas id="expenseCompositionChart"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -96,13 +103,13 @@
     <!-- Transaksi Content -->
     <div id="content-transaksi" class="hidden">
       <div class="bg-white shadow rounded p-4">
-        <h2 class="text-xl font-semibold mb-1">Semua Transaksi</h2>
+        <h2 class="text-xl font-semibold mb-1">All transaction</h2>
         <p class="text-sm text-gray-500 mb-4">Daftar semua transaksi dalam periode yang dipilih</p>
         <div class="flex items-center space-x-2 mb-4">
           <button class="border px-3 py-1 rounded">Filter</button>
-          <button class="bg-gray-200 px-3 py-1 rounded">Semua</button>
-          <button class="bg-green-100 text-green-600 px-3 py-1 rounded">↑ Pendapatan</button>
-          <button class="bg-red-100 text-red-600 px-3 py-1 rounded">↓ Pengeluaran</button>
+          <button class="bg-gray-200 px-3 py-1 rounded">All</button>
+          <button class="bg-green-100 text-green-600 px-3 py-1 rounded">↑ Revenue</button>
+          <button class="bg-red-100 text-red-600 px-3 py-1 rounded">↓ Expense</button>
         </div>
         <input type="text" placeholder="Cari transaksi..." class="w-full border px-3 py-2 rounded mb-4">
 
@@ -120,7 +127,7 @@
               </tr>
             </thead>
             <tbody>
-            @foreach(session('transactions', []) as $t)
+              @foreach(session('transactions', []) as $t)
               <tr class="border-b hover:bg-gray-50">
                 <td class="px-4 py-3">{{ $t['date'] }}</td>
                 <td class="px-4 py-3">{{ $t['descriptions'] }}</td>
@@ -181,8 +188,7 @@
 </div>
 
 <script>
-  function
-  showTab(tab) {
+  function showTab(tab) {
     const tabs = ["ringkasan", "transaksi"];
     tabs.forEach(id => {
       document.getElementById("content-" + id).classList.add("hidden");
@@ -194,13 +200,150 @@
     document.getElementById("tab-" + tab).className =
       "px-4 py-2 text-sm font-medium bg-[#E8BB00] text-white shadow rounded-md";
   }
- 
-    function confirmDelete(transactionId) {
-        const form = document.getElementById('delete-form-' + transactionId);
-        if (confirm('Are you sure you want to delete this transaction?')) {
-            form.submit();
-        }
-    }
 
+  function confirmDelete(transactionId) {
+    const form = document.getElementById('delete-form-' + transactionId);
+    if (confirm('Are you sure you want to delete this transaction?')) {
+      form.submit();
+    }
+  }
+
+  // Data dari controller
+  let monthlyData = @json($monthlyData);
+  let expenseData = @json($expenseData);
+
+
+
+  // Format angka ke format Rupiah
+  function formatRupiah(angka) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(angka);
+  }
+
+  // Grafik Ringkasan Keuangan (Bar Chart)
+  const financialSummaryCtx = document.getElementById('financialSummaryChart').getContext('2d');
+  new Chart(financialSummaryCtx, {
+    type: 'bar',
+    data: {
+      labels: monthlyData.map(item => item.month),
+      datasets: [{
+          label: 'Revenue',
+          data: monthlyData.map(item => item.revenue),
+          backgroundColor: 'rgba(34, 197, 94, 0.7)',
+          borderColor: 'rgba(34, 197, 94, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+        {
+          label: 'expenses',
+          data: monthlyData.map(item => item.expenses),
+          backgroundColor: 'rgba(239, 68, 68, 0.7)',
+          borderColor: 'rgba(239, 68, 68, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return 'Rp ' + value.toLocaleString('id-ID');
+            }
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ' + formatRupiah(context.raw);
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Grafik Komposisi Pengeluaran (Pie Chart)
+  const expenseCompositionCtx = document.getElementById('expenseCompositionChart').getContext('2d');
+
+  // Jika tidak ada data pengeluaran, tampilkan pesan
+  if (expenseData.length === 0) {
+    const noDataText = new Chart(expenseCompositionCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Tidak ada data'],
+        datasets: [{
+          data: [1],
+          backgroundColor: ['#e5e7eb'],
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+          }
+        }
+      }
+    });
+  } else {
+    // Warna untuk pie chart
+    const pieColors = [
+      'rgba(59, 130, 246, 0.7)',
+      'rgba(16, 185, 129, 0.7)',
+      'rgba(249, 115, 22, 0.7)',
+      'rgba(139, 92, 246, 0.7)',
+      'rgba(236, 72, 153, 0.7)',
+    ];
+
+    // Hitung total pengeluaran
+    const totalExpense = expenseData.reduce((sum, item) => sum + item.nilai, 0);
+
+    // Buat dataset untuk pie chart
+    new Chart(expenseCompositionCtx, {
+      type: 'doughnut',
+      data: {
+        labels: expenseData.map(item => item.kategori),
+        datasets: [{
+          data: expenseData.map(item => item.nilai),
+          backgroundColor: pieColors.slice(0, expenseData.length),
+          borderColor: pieColors.map(color => color.replace('0.7', '1')),
+          borderWidth: 1,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '50%',
+        plugins: {
+          legend: {
+            position: 'right',
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const value = context.raw;
+                const percentage = ((value / totalExpense) * 100).toFixed(1);
+                return context.label + ': ' + formatRupiah(value) + ' (' + percentage + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
 </script>
 @endsection
