@@ -11,12 +11,12 @@
             <!-- Header with Title and Create Button -->
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold mb-4">Events</h1>
-                <button class="px-4 py-2 bg-orange-400 text-white rounded-md hover:bg-orange-600 transition-colors flex items-center gap-2">
+                <a href="{{ route('events.create') }}" class="px-4 py-2 bg-orange-400 text-white rounded-md hover:bg-orange-600 transition-colors flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                     </svg>
                     Create New Event
-                </button>
+                </a>
             </div>
 
             <!-- Month Navigation and Filters -->
@@ -91,58 +91,44 @@
                 </div>
             </div>
 
+            @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+            @endif
+
             <!-- Upcoming Events Cards -->
             <div class="bg-white border rounded p-4 mb-5">
                 <h3 class="font-medium mb-4">Upcoming Events</h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Card 1 -->
+                    @forelse($upcomingEvents as $event)
                     <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                         <div class="p-4">
                             <div class="flex justify-between items-start">
-                                <h4 class="font-medium">Team Meeting</h4>
-                                <div>
-                                    <button class="px-3 py-1 bg-orange-100 text-orange-600 rounded hover:bg-orange-200 transition-colors text-sm font-medium">
+                                <h4 class="font-medium">{{ $event['title'] }}</h4>
+                                <div class="flex gap-2">
+                                    <a href="{{ route('events.edit', $event['id']) }}" class="px-3 py-1 bg-orange-100 text-orange-600 rounded hover:bg-orange-200 transition-colors text-sm font-medium">
                                         Edit
-                                    </button>
+                                    </a>
+                                    <form action="{{ route('events.destroy', $event['id']) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors text-sm font-medium">
+                                            Delete
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            <p class="text-sm text-gray-500 mt-1">August 12, 2024 - 10:00 AM</p>
-                            <p class="text-sm mt-2">Weekly team sync to discuss project progress</p>
+                            <p class="text-sm text-gray-500 mt-1">{{ $event['date'] }} - {{ $event['time'] }}</p>
+                            <p class="text-sm mt-2">{{ $event['description'] }}</p>
                         </div>
                     </div>
-
-                    <!-- Card 2 -->
-                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                        <div class="p-4">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium">Project Deadline</h4>
-                                <div>
-                                    <button class="px-3 py-1 bg-orange-100 text-orange-600 rounded hover:bg-orange-200 transition-colors text-sm font-medium">
-                                        Edit
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">August 15, 2024 - All Day</p>
-                            <p class="text-sm mt-2">Final submission for the website redesign</p>
-                        </div>
+                    @empty
+                    <div class="col-span-3 text-center py-4 text-gray-500">
+                        No upcoming events found.
                     </div>
-
-                    <!-- Card 3 -->
-                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                        <div class="p-4">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium">Client Presentation</h4>
-                                <div>
-                                    <button class="px-3 py-1 bg-orange-100 text-orange-600 rounded hover:bg-orange-200 transition-colors text-sm font-medium">
-                                        Edit
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">August 18, 2024 - 2:00 PM</p>
-                            <p class="text-sm mt-2">Present the final project to the client</p>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -151,53 +137,33 @@
                 <h3 class="font-medium mb-4">History</h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- History Card 1 -->
+                    @forelse($pastEvents as $event)
                     <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
                         <div class="p-4">
                             <div class="flex justify-between items-start">
-                                <h4 class="font-medium">Kickoff Meeting</h4>
-                                <div>
-                                    <button class="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-orange-200 transition-colors text-sm font-medium">
+                                <h4 class="font-medium">{{ $event['title'] }}</h4>
+                                <div class="flex gap-2">
+                                    <a href="{{ route('events.show', $event['id']) }}" class="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-green-200 transition-colors text-sm font-medium">
                                         View
-                                    </button>
+                                    </a>
+                                    <form action="{{ route('events.destroy', $event['id']) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors text-sm font-medium">
+                                            Delete
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            <p class="text-sm text-gray-500 mt-1">July 25, 2024 - 9:00 AM</p>
-                            <p class="text-sm mt-2">Initial project kickoff with the design team</p>
+                            <p class="text-sm text-gray-500 mt-1">{{ $event['date'] }} - {{ $event['time'] }}</p>
+                            <p class="text-sm mt-2">{{ $event['description'] }}</p>
                         </div>
                     </div>
-
-                    <!-- History Card 2 -->
-                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
-                        <div class="p-4">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium">Client Requirements</h4>
-                                <div>
-                                    <button class="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-orange-200 transition-colors text-sm font-medium">
-                                        View
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">July 28, 2024 - 2:30 PM</p>
-                            <p class="text-sm mt-2">Meeting to gather client requirements and expectations</p>
-                        </div>
+                    @empty
+                    <div class="col-span-3 text-center py-4 text-gray-500">
+                        No past events found.
                     </div>
-
-                    <!-- History Card 3 -->
-                    <div class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
-                        <div class="p-4">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium">Design Review</h4>
-                                <div>
-                                    <button class="px-3 py-1 bg-green-100 text-green-600 rounded hover:bg-orange-200 transition-colors text-sm font-medium">
-                                        View
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">August 5, 2024 - 11:00 AM</p>
-                            <p class="text-sm mt-2">Review of initial design concepts with the team</p>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>

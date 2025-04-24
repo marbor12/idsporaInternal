@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
@@ -13,9 +15,17 @@ Route::get('/tasks', function () {
     return view('tasks/read');
 })->name('tasks');
 
-Route::get('/events', function () {
-    return view('events/read');
-})->name('events');
+// Route::get('/events', function () {
+//     return view('events/read');
+// })->name('events');
+
+Route::resource('events', EventController::class);
+
+Route::get('/events', [EventController::class, 'index'])->name('events');
+
+// Route::get('/events/create', [EventController::class, 'create'])->name('events/create');
+
+
 
 Route::get('/finance', function () {
     return view('finance/read');
@@ -23,8 +33,4 @@ Route::get('/finance', function () {
 
 Route::get('/laporan', function () {
     return view('laporan/read');
-})->name('laporan');
-
-Route::get('/laporan', function () {
-    return view('laporan');
 })->name('laporan');
