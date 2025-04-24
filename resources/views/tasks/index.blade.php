@@ -93,39 +93,46 @@
                         </thead>
                         <tbody>
                             @foreach ($tasks as $task)
-                                                    @php
-                                                        $statusClasses = [
-                                                            'pending' => 'bg-red-100 text-red-800',
-                                                            'in_progress' => 'bg-yellow-100 text-yellow-800',
-                                                            'done' => 'bg-green-100 text-green-800',
-                                                        ];
-                                                        $badge = $statusClasses[$task['status']] ?? 'bg-gray-100 text-gray-800';
-                                                    @endphp
-                                                    <tr class="border-b text-center">
-                                                        <td class="py-2 text-left">{{ $task['title'] }}</td>
-                                                        <td class="py-2">{{ $task['event'] }}</td>
-                                                        <td class="py-2">{{ $task['assigned_to'] }}</td>
-                                                        <td class="py-2">{{ \Carbon\Carbon::parse($task['deadline'])->format('d M Y') }}</td>
-                                                        <td class="py-2">
-                                                            <span
-                                                                class="px-2 py-1 rounded text-xs {{ $badge }}">{{ ucfirst(str_replace('_', ' ', $task['status'])) }}</span>
-                                                        </td>
-                                                        <td class="py-2">
-                                                            @if (!empty($task['evidence']))
-                                                                <a href="{{ $task['evidence'] }}" class="text-blue-500 text-sm" target="_blank">See</a>
-                                                            @else
-                                                                <span class="text-gray-500 text-sm">Unavailable</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="py-2 space-x-2">
-                                                            <a href="{{ route('tasks.edit', $task['id']) }}"
-                                                                class="text-blue-600 hover:underline">Edit</a>
-                                                            <form action="{{ route('tasks.destroy', $task['id']) }}" method="POST" class="inline">
-                                                                @csrf @method('DELETE')
-                                                                <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
+                                @php
+                                    // Pastikan kunci 'status' ada sebelum mengaksesnya
+                                    $statusClasses = [
+                                        'pending' => 'bg-red-100 text-red-800',
+                                        'in_progress' => 'bg-yellow-100 text-yellow-800',
+                                        'done' => 'bg-green-100 text-green-800',
+                                    ];
+                                    $badge = isset($task['status']) ? ($statusClasses[$task['status']] ?? 'bg-gray-100 text-gray-800') : 'bg-gray-100 text-gray-800';
+                                @endphp
+                                <tr class="border-b text-center">
+                                    <td class="py-2 text-left">{{ $task['title'] ?? 'N/A' }}</td>
+                                    <td class="py-2">{{ $task['event'] ?? 'N/A' }}</td>
+                                    <td class="py-2">{{ $task['assigned_to'] ?? 'N/A' }}</td>
+                                    <td class="py-2">
+                                        {{ isset($task['deadline']) ? \Carbon\Carbon::parse($task['deadline'])->format('d M Y') : 'N/A' }}
+                                    </td>
+                                    <td class="py-2">
+                                        <span class="px-2 py-1 rounded text-xs {{ $badge }}">
+                                            {{ isset($task['status']) ? ucfirst(str_replace('_', ' ', $task['status'])) : 'Unknown' }}
+                                        </span>
+                                    </td>
+                                    <td class="py-2">
+                                        @if (!empty($task['evidence']))
+                                            <a href="{{ $task['evidence'] }}" class="text-blue-500 text-sm" target="_blank">See</a>
+                                        @else
+                                            <span class="text-gray-500 text-sm">Unavailable</span>
+                                        @endif
+                                    </td>
+                                    <td class="py-2 space-x-2">
+                                        @if (isset($task['id']))
+                                            <a href="{{ route('tasks.edit', $task['id']) }}" class="text-blue-600 hover:underline">Edit</a>
+                                            <form action="{{ route('tasks.destroy', $task['id']) }}" method="POST" class="inline">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:underline">Delete</button>
+                                            </form>
+                                        @else
+                                            <span class="text-gray-500 text-sm">No Actions Available</span>
+                                        @endif
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>

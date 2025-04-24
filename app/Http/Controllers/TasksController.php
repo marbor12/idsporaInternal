@@ -38,26 +38,32 @@ class TasksController extends Controller
 
         return redirect()->route('tasks');
     }
-
     public function edit($id)
     {
         // Ambil data tasks dari sesi
         $tasks = session('tasks', []);
 
-        // Cari task berdasarkan ID
-        $task = collect($tasks)->firstWhere('id', $id);
+        // Cari task berdasarkan ID dengan validasi
+        $task = collect($tasks)->first(function ($task) use ($id) {
+            return isset($task['id']) && $task['id'] == $id;
+        });
+
+        // Jika task tidak ditemukan, redirect dengan pesan error
+        if (!$task) {
+            return redirect()->route('tasks')->with('error', 'Task not found.');
+        }
 
         return view('tasks.edit', compact('task'));
     }
-
+    
     public function update(Request $request, $id)
     {
         // Ambil data tasks dari sesi
         $tasks = session('tasks', []);
 
-        // Perbarui task berdasarkan ID
+        // Perbarui task berdasarkan ID dengan validasi
         foreach ($tasks as &$task) {
-            if ($task['id'] == $id) {
+            if (isset($task['id']) && $task['id'] == $id) {
                 $task['title'] = $request->input('title');
                 $task['event'] = $request->input('event');
                 $task['assigned_to'] = $request->input('assigned_to');
@@ -79,13 +85,13 @@ class TasksController extends Controller
         // Ambil data tasks dari sesi
         $tasks = session('tasks', []);
 
-        // Hapus task berdasarkan ID
+        // Hapus task berdasarkan ID dengan validasi
         $tasks = array_filter($tasks, function ($task) use ($id) {
-            return $task['id'] != $id;
+            return isset($task['id']) && $task['id'] != $id;
         });
 
         // Simpan kembali ke sesi
-        session(['tasks' => $tasks]);
+        session(['tasks' => array_values($tasks)]); // Reindex array
 
         return redirect()->route('tasks');
     }
