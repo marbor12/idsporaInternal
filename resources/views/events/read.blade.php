@@ -122,6 +122,9 @@
                             </div>
                             <p class="text-sm text-gray-500 mt-1">{{ $event['date'] }} - {{ $event['time'] }}</p>
                             <p class="text-sm mt-2">{{ $event['description'] }}</p>
+                            <div class="mt-3">
+                                <a href="{{ route('events.show', $event['id']) }}" class="text-sm text-orange-500 hover:text-orange-700">View Details →</a>
+                            </div>
                         </div>
                     </div>
                     @empty

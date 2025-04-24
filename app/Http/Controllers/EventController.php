@@ -70,7 +70,7 @@ class EventController extends Controller
         // Store in session
         session(['events' => $events]);
         
-        return redirect()->route('events.index')->with('success', 'Event created successfully!');
+        return redirect()->route('events')->with('success', 'Event created successfully!');
     }
 
     /**
@@ -90,7 +90,7 @@ class EventController extends Controller
         }
         
         if (!$event) {
-            return redirect()->route('events.index')->with('error', 'Event not found!');
+            return redirect()->route('events')->with('error', 'Event not found!');
         }
         
         return view('events.show', compact('event'));
@@ -113,7 +113,7 @@ class EventController extends Controller
         }
         
         if (!$event) {
-            return redirect()->route('events.index')->with('error', 'Event not found!');
+            return redirect()->route('events')->with('error', 'Event not found!');
         }
         
         return view('events.edit', compact('event'));
@@ -152,29 +152,32 @@ class EventController extends Controller
         // Store updated events in session
         session(['events' => $events]);
         
-        return redirect()->route('events.index')->with('success', 'Event updated successfully!');
+        return redirect()->route('events')->with('success', 'Event updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        $events = session('events', []);
-        
-        // Filter out the event to delete
-        $events = array_filter($events, function($event) use ($id) {
-            return $event['id'] !== $id;
-        });
-        
-        // Re-index the array
-        $events = array_values($events);
-        
-        // Store updated events in session
-        session(['events' => $events]);
-        
-        return redirect()->route('events.index')->with('success', 'Event deleted successfully!');
-    }
+    /**
+ * Remove the specified resource from storage.
+ */
+public function destroy(string $id)
+{
+    $events = session('events', []);
+    
+    // Filter out the event to delete
+    $events = array_filter($events, function($event) use ($id) {
+        return $event['id'] !== $id;
+    });
+    
+    // Re-index the array
+    $events = array_values($events);
+    
+    // Store updated events in session
+    session(['events' => $events]);
+    
+    return redirect()->route('events')->with('success', 'Event deleted successfully!');
+}
     
     /**
      * Get sample events for initial data
