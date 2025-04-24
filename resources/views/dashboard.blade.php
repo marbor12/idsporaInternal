@@ -102,7 +102,7 @@
                                 <td class="py-2">Agvin</td>
                                 <td class="py-2"><a href="#" class="text-blue-500 text-sm">Add</a></td>
                                 <td class="py-2">
-                                    @if (false) {{-- Ganti dengan kondisi real evidence --}}
+                                    @if (false) 
                                         <a href="#" class="text-blue-500 text-sm">Lihat</a>
                                     @else
                                         <span class="text-gray-500 text-sm">Belum tersedia</span>

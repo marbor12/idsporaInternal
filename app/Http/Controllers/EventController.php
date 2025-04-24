@@ -7,80 +7,86 @@ use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    // Menampilkan daftar event
+    public function index(Request $request)
     {
-        // Get events from session or initialize with sample data if empty
+        // Ambil data event dari session, jika tidak ada gunakan data contoh
         $events = session('events', $this->getSampleEvents());
-        
-        // Get current date for comparison
+
+        // Ambil tanggal hari ini
         $currentDate = date('Y-m-d');
-        
-        // Split events into upcoming and past
-        $upcomingEvents = array_filter($events, function($event) use ($currentDate) {
-            return $event['date'] >= $currentDate;
+
+        // Pisahkan event menjadi upcoming (mendatang) dan past (sudah berlalu)
+        $upcomingEvents = array_filter($events, function ($event) use ($currentDate) {
+            return $event['date'] >= $currentDate; // Event yang tanggalnya >= hari ini
         });
-        
-        $pastEvents = array_filter($events, function($event) use ($currentDate) {
-            return $event['date'] < $currentDate;
+
+        $pastEvents = array_filter($events, function ($event) use ($currentDate) {
+            return $event['date'] < $currentDate; // Event yang tanggalnya < hari ini
         });
-        
+
+        // Kirim data ke view
         return view('events.read', compact('upcomingEvents', 'pastEvents'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Menampilkan form untuk membuat event baru
     public function create()
     {
-        return view('events.create');
+        return view('events.create'); // Tampilkan halaman form create
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Menyimpan event baru ke session
     public function store(Request $request)
     {
+        // Validasi input dari form
         $request->validate([
             'title' => 'required|string|max:255',
             'date' => 'required|date',
             'time' => 'required',
             'category' => 'required|string',
+            'venue' => 'required|string|max:255',
+            'capacity' => 'required|integer|min:1',
+            'speaker' => 'required|string|max:255',
+            'mc' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
-        
-        // Get existing events or initialize
+
+        // Ambil data event yang sudah ada di session
         $events = session('events', []);
-        
-        // Create new event
+
+        // Buat event baru
         $newEvent = [
             'id' => Str::uuid()->toString(),
             'title' => $request->title,
             'date' => $request->date,
             'time' => $request->time,
             'category' => $request->category,
+            'venue' => $request->venue,
+            'capacity' => $request->capacity,
+            'speaker' => $request->speaker,
+            'mc' => $request->mc,
             'description' => $request->description ?? '',
         ];
-        
-        // Add to events array
+
+        // Tambahkan event baru ke array
         $events[] = $newEvent;
-        
-        // Store in session
+
+        // Simpan kembali ke session
         session(['events' => $events]);
-        
+
+        // Redirect ke halaman daftar event dengan pesan sukses
         return redirect()->route('events')->with('success', 'Event created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Menampilkan detail event berdasarkan ID
     public function show(string $id)
     {
+        // Ambil data event dari session
         $events = session('events', []);
-        
-        // Find the event by ID
+
+        // Cari event berdasarkan ID
+        // Pake foreach untuk mencari event berdasarkan ID
         $event = null;
         foreach ($events as $e) {
             if ($e['id'] === $id) {
@@ -88,22 +94,23 @@ class EventController extends Controller
                 break;
             }
         }
-        
+
+        // Jika event tidak ditemukan, redirect dengan pesan error
         if (!$event) {
             return redirect()->route('events')->with('error', 'Event not found!');
         }
-        
+
+        // Tampilkan halaman detail event
         return view('events.show', compact('event'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Menampilkan form untuk mengedit event
     public function edit(string $id)
     {
+        // Ambil data event dari session
         $events = session('events', []);
-        
-        // Find the event by ID
+
+        // Cari event berdasarkan ID
         $event = null;
         foreach ($events as $e) {
             if ($e['id'] === $id) {
@@ -111,30 +118,36 @@ class EventController extends Controller
                 break;
             }
         }
-        
+
+        // Jika event tidak ditemukan, redirect dengan pesan error
         if (!$event) {
             return redirect()->route('events')->with('error', 'Event not found!');
         }
-        
+
+        // Tampilkan halaman edit event
         return view('events.edit', compact('event'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Memperbarui event berdasarkan ID
     public function update(Request $request, string $id)
     {
+        // Validasi input dari form
         $request->validate([
             'title' => 'required|string|max:255',
             'date' => 'required|date',
             'time' => 'required',
             'category' => 'required|string',
+            'venue' => 'required|string|max:255',
+            'capacity' => 'required|integer|min:1',
+            'speaker' => 'required|string|max:255',
+            'mc' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
-        
+
+        // Ambil data event dari session
         $events = session('events', []);
-        
-        // Update the event
+
+        // Perbarui event berdasarkan ID
         foreach ($events as $key => $event) {
             if ($event['id'] === $id) {
                 $events[$key] = [
@@ -143,98 +156,74 @@ class EventController extends Controller
                     'date' => $request->date,
                     'time' => $request->time,
                     'category' => $request->category,
+                    'venue' => $request->venue,
+                    'capacity' => $request->capacity,
+                    'speaker' => $request->speaker,
+                    'mc' => $request->mc,
                     'description' => $request->description ?? '',
                 ];
                 break;
             }
         }
-        
-        // Store updated events in session
+
+        // Simpan kembali ke session
         session(['events' => $events]);
-        
+
+        // Redirect ke halaman daftar event dengan pesan sukses
         return redirect()->route('events')->with('success', 'Event updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    /**
- * Remove the specified resource from storage.
- */
-public function destroy(string $id)
-{
-    $events = session('events', []);
-    
-    // Filter out the event to delete
-    $events = array_filter($events, function($event) use ($id) {
-        return $event['id'] !== $id;
-    });
-    
-    // Re-index the array
-    $events = array_values($events);
-    
-    // Store updated events in session
-    session(['events' => $events]);
-    
-    return redirect()->route('events')->with('success', 'Event deleted successfully!');
-}
-    
-    /**
-     * Get sample events for initial data
-     */
+    // Menghapus event berdasarkan ID
+    public function destroy(string $id)
+    {
+        // Ambil data event dari session
+        $events = session('events', []);
+
+        // Hapus event berdasarkan ID
+        $events = array_filter($events, function ($event) use ($id) {
+            return $event['id'] !== $id;
+        });
+
+        // Re-index array setelah penghapusan
+        $events = array_values($events);
+
+        // Simpan kembali ke session
+        session(['events' => $events]);
+
+        // Redirect ke halaman daftar event dengan pesan sukses
+        return redirect()->route('events')->with('success', 'Event deleted successfully!');
+    }
+
+    // Mengembalikan data contoh untuk event
     private function getSampleEvents()
     {
         $currentYear = date('Y');
         $currentMonth = date('m');
-        
+
         return [
             [
-                'id' => Str::uuid()->toString(),
-                'title' => 'Team Meeting',
-                'date' => "$currentYear-$currentMonth-12",
+                'id' => 1,
+                'title' => 'Webinar Laravel',
+                'date' => '2025-04-30',
                 'time' => '10:00',
-                'category' => 'webinar',
-                'description' => 'Weekly team sync to discuss project progress',
+                'category' => 'Webinar',
+                'venue' => 'Online',
+                'capacity' => 100,
+                'speaker' => 'Dr. Wardani Muhamad, S.T., M.T.',
+                'mc' => 'Agvin Amalia',
+                'description' => 'Belajar dasar laravel.',
             ],
             [
-                'id' => Str::uuid()->toString(),
-                'title' => 'Project Deadline',
-                'date' => "$currentYear-$currentMonth-15",
-                'time' => '09:00',
-                'category' => 'other',
-                'description' => 'Final submission for the website redesign',
-            ],
-            [
-                'id' => Str::uuid()->toString(),
-                'title' => 'Client Presentation',
-                'date' => "$currentYear-$currentMonth-18",
+                'id' => 2,
+                'title' => 'Workshop Figma',
+                'date' => '2025-03-15',
                 'time' => '14:00',
-                'category' => 'seminar',
-                'description' => 'Present the final project to the client',
-            ],
-            [
-                'id' => Str::uuid()->toString(),
-                'title' => 'Kickoff Meeting',
-                'date' => "$currentYear-" . str_pad($currentMonth - 1, 2, '0', STR_PAD_LEFT) . "-25",
-                'time' => '09:00',
-                'category' => 'workshop',
-                'description' => 'Initial project kickoff with the design team',
-            ],
-            [
-                'id' => Str::uuid()->toString(),
-                'title' => 'Client Requirements',
-                'date' => "$currentYear-" . str_pad($currentMonth - 1, 2, '0', STR_PAD_LEFT) . "-28",
-                'time' => '14:30',
-                'category' => 'fgd',
-                'description' => 'Meeting to gather client requirements and expectations',
-            ],
-            [
-                'id' => Str::uuid()->toString(),
-                'title' => 'Design Review',
-                'date' => "$currentYear-$currentMonth-05",
-                'time' => '11:00',
-                'category' => 'workshop',
-                'description' => 'Review of initial design concepts with the team',
+                'category' => 'Workshop',
+                'venue' => 'Aula FIT',
+                'capacity' => 50,
+                'speaker' => 'Robbi Hendriyanto, S.T., M.T.',
+                'mc' => 'Stephanie Tarigan',
+                'description' => 'Figma dasar bagi pemula.',
             ],
         ];
     }

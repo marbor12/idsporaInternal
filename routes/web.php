@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +24,9 @@ Route::get('/tasks', function () {
 // Route::resource('events', EventController::class);
 
 // Route::get('/events', [EventController::class, 'index'])->name('events');
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 //Route untuk events
 Route::resource('events', EventController::class);

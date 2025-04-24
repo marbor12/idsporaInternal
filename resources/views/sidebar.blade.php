@@ -31,12 +31,12 @@
                     Finance
                 </a>
             </li>
-            <li>
+            <!-- <li>
                 <a href="{{ route('laporan') }}"
                     class="block px-4 py-2 rounded {{ request()->routeIs('laporan') ? 'bg-orange-400 text-white' : 'hover:bg-gray-100' }}">
                     Laporan
                 </a>
-            </li>
+            </li> -->
         </ul>
     </nav>
 
