@@ -143,8 +143,8 @@
                     </table>
 
                     <div class="flex justify-end mt-4">
-                        <a href="{{ route('tasks') }}"
-                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">View All</a>
+                        <a href="{{ route('tasks') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">View All</a>
+
                     </div>
                 </div>
 
