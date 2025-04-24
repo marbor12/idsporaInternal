@@ -1,35 +1,14 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
 class TasksController extends Controller
 {
-    private $tasks = [
-        [
-            'id' => 1,
-            'title' => 'Kirim Sertifikat',
-            'event' => 'Kuliah Umum Capstone',
-            'assigned_to' => 'Fathan',
-            'deadline' => '2025-04-26',
-            'status' => 'In Progress',
-            'evidence' => null,
-        ],
-        [
-            'id' => 2,
-            'title' => 'Link Registrasi',
-            'event' => 'Kuliah Umum Capstone',
-            'assigned_to' => 'Agvin',
-            'deadline' => '2025-04-18',
-            'status' => 'Done',
-            'evidence' => 'https://drive.google.com/file/d/1mN0s_DHMpsfPk1P_s8BSzNUSnl9TEY-J/view?usp=sharing',
-        ]
-    ];
-
-    public function index() 
+    public function index()
     {
-        $tasks = $this->tasks;
+        // Ambil data tasks dari sesi, jika tidak ada, gunakan array kosong
+        $tasks = session('tasks', []);
         return view('tasks.index', compact('tasks'));
     }
 
@@ -38,24 +17,76 @@ class TasksController extends Controller
         return view('tasks.create');
     }
 
-    public function store(Request$request)
+    public function store(Request $request)
     {
+        // Ambil data tasks dari sesi
+        $tasks = session('tasks', []);
+
+        // Tambahkan task baru ke array
+        $tasks[] = [
+            'id' => count($tasks) + 1, // Buat ID unik
+            'title' => $request->input('title'),
+            'event' => $request->input('event'),
+            'assigned_to' => $request->input('assigned_to'),
+            'deadline' => $request->input('deadline'),
+            'status' => $request->input('status'),
+            'evidence' => $request->input('evidence'),
+        ];
+
+        // Simpan kembali ke sesi
+        session(['tasks' => $tasks]);
+
         return redirect()->route('tasks');
     }
 
     public function edit($id)
     {
-        $task = collect($this->tasks)->firstWhere('id', $id);
+        // Ambil data tasks dari sesi
+        $tasks = session('tasks', []);
+
+        // Cari task berdasarkan ID
+        $task = collect($tasks)->firstWhere('id', $id);
+
         return view('tasks.edit', compact('task'));
     }
 
     public function update(Request $request, $id)
     {
+        // Ambil data tasks dari sesi
+        $tasks = session('tasks', []);
+
+        // Perbarui task berdasarkan ID
+        foreach ($tasks as &$task) {
+            if ($task['id'] == $id) {
+                $task['title'] = $request->input('title');
+                $task['event'] = $request->input('event');
+                $task['assigned_to'] = $request->input('assigned_to');
+                $task['deadline'] = $request->input('deadline');
+                $task['status'] = $request->input('status');
+                $task['evidence'] = $request->input('evidence');
+                break;
+            }
+        }
+
+        // Simpan kembali ke sesi
+        session(['tasks' => $tasks]);
+
         return redirect()->route('tasks');
     }
 
-    public function destroy($id) 
+    public function destroy($id)
     {
+        // Ambil data tasks dari sesi
+        $tasks = session('tasks', []);
+
+        // Hapus task berdasarkan ID
+        $tasks = array_filter($tasks, function ($task) use ($id) {
+            return $task['id'] != $id;
+        });
+
+        // Simpan kembali ke sesi
+        session(['tasks' => $tasks]);
+
         return redirect()->route('tasks');
     }
 }
