@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class FinanceController extends Controller
 {
@@ -15,7 +14,7 @@ class FinanceController extends Controller
             'category' => 'expenses',
             'subcategory' => 'operational',
             'status' => 'pending',
-            'date' => '02-02-2025',
+            'date' => '2025-02-02',
         ],
         [
             'id' => 2,
@@ -24,7 +23,7 @@ class FinanceController extends Controller
             'category' => 'revenue',
             'subcategory' => 'event',
             'status' => 'completed',
-            'date' => '02-04-2025',
+            'date' => '2025-04-02',
         ],
     ];
 
@@ -36,46 +35,62 @@ class FinanceController extends Controller
         }
 
         // Ambil transaksi dari session
-        $transactions = session('transactions');
+        $transactions = session('transactions', []);
 
         // Hitung total revenue
         $totalRevenue = array_reduce($transactions, function ($carry, $item) {
             return $carry + ($item['category'] === 'revenue' ? (int) $item['amount'] : 0);
         }, 0);
 
+        // Hitung total expenses
         $totalExpenses = array_reduce($transactions, function ($carry, $item) {
             return $carry + ($item['category'] === 'expenses' ? (int) $item['amount'] : 0);
         }, 0);
 
+        // Hitung net balance
         $netBalance = $totalRevenue - $totalExpenses;
+
         // Data untuk grafik ringkasan keuangan (bar chart)
-        $monthlyData = [
-            ['month' => 'Jan', 'revenue' => 0, 'expenses' => 0],
-            ['month' => 'Feb', 'revenue' => 0, 'expenses' => 500000], // Biaya Wifi pada Feb
-            ['month' => 'Mar', 'revenue' => 0, 'expenses' => 0],
-            ['month' => 'Apr', 'revenue' => 2000000, 'expenses' => 0], // Fee event pada Apr
-            ['month' => 'Mei', 'revenue' => 0, 'expenses' => 0],
-            ['month' => 'Jun', 'revenue' => 0, 'expenses' => 0],
-        ];
+        $monthlyData = [];
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        // Inisialisasi data bulanan
+        foreach ($months as $index => $month) {
+            $monthlyData[$index] = [
+                'month' => $month,
+                'revenue' => 0,
+                'expenses' => 0,
+            ];
+        }
+
+        // Hitung revenue dan expenses per bulan
+        foreach ($transactions as $transaction) {
+            $monthIndex = (int) \Carbon\Carbon::parse($transaction['date'])->format('m') - 1;
+            if ($transaction['category'] === 'revenue') {
+                $monthlyData[$monthIndex]['revenue'] += (int) $transaction['amount'];
+            } elseif ($transaction['category'] === 'expenses') {
+                $monthlyData[$monthIndex]['expenses'] += (int) $transaction['amount'];
+            }
+        }
 
         // Data untuk grafik komposisi expenses (pie chart)
         $expenseData = [];
         $expensesByCategory = [];
-        
+
         foreach ($transactions as $transaction) {
             if ($transaction['category'] === 'expenses') {
-                $subkategori = $transaction['subcategory'];
-                if (!isset($expensesByCategory[$subkategori])) {
-                    $expensesByCategory[$subkategori] = 0;
+                $subcategory = $transaction['subcategory'];
+                if (!isset($expensesByCategory[$subcategory])) {
+                    $expensesByCategory[$subcategory] = 0;
                 }
-                $expensesByCategory[$subkategori] += (int) $transaction['amount'];
+                $expensesByCategory[$subcategory] += (int) $transaction['amount'];
             }
         }
-        
-        foreach ($expensesByCategory as $kategori => $nilai) {
+
+        foreach ($expensesByCategory as $category => $value) {
             $expenseData[] = [
-                'kategori' => $kategori,
-                'nilai' => $nilai
+                'kategori' => $category,
+                'nilai' => $value,
             ];
         }
 
@@ -97,44 +112,45 @@ class FinanceController extends Controller
     // Simpan data baru
     public function store(Request $request)
     {
-        // Menambahkan data baru ke properti objek
+        // Ambil transaksi dari session
+        $transactions = session('transactions', []);
+
+        // Tentukan ID baru
+        $newId = count($transactions) > 0 ? max(array_column($transactions, 'id')) + 1 : 1;
+
+        // Menambahkan data baru
         $new = [
-            'id'   => end($this->data)['id'] + 1,
+            'id' => $newId,
             'descriptions' => $request->descriptions,
-            'amount'       => $request->amount,
-            'category'     => $request->category,
-            'subcategory'  => $request->subcategory,
-            'status'       => $request->status,
-            'date'         => $request->date,
+            'amount' => $request->amount,
+            'category' => $request->category,
+            'subcategory' => $request->subcategory,
+            'status' => $request->status,
+            'date' => $request->date,
         ];
-        // Pastikan data transaksi dalam session adalah array
-        $transactions = session('transactions', $this->data);
 
         // Tambahkan transaksi baru
         $transactions[] = $new;
 
         // Simpan kembali ke session
         session(['transactions' => $transactions]);
-        return redirect()->route('finance');
+
+        return redirect()->route('finance')->with('success', 'Transaksi berhasil ditambahkan.');
     }
-    // Menampilkan form edit transaksi
+
     public function edit($id)
     {
         // Ambil transaksi berdasarkan ID
         $transactions = session('transactions', []);
-        $transaction = null;
+        $transaction = collect($transactions)->firstWhere('id', $id);
 
-        foreach ($transactions as $t) {
-            if ($t['id'] == $id) {
-                $transaction = $t;
-                break;
-            }
+        if (!$transaction) {
+            return redirect()->route('finance')->with('error', 'Transaksi tidak ditemukan.');
         }
 
         return view('finance.edit', compact('transaction'));
     }
 
-    // Update transaksi
     public function update(Request $request, $id)
     {
         $transactions = session('transactions', []);
@@ -145,44 +161,30 @@ class FinanceController extends Controller
                 $transaction['descriptions'] = $request->descriptions;
                 $transaction['category'] = $request->category;
                 $transaction['amount'] = $request->amount;
+                $transaction['subcategory'] = $request->subcategory;
+                $transaction['status'] = $request->status;
                 break;
             }
         }
 
         session(['transactions' => $transactions]);
 
-        return redirect()->route('finance');
+        return redirect()->route('finance')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         // Ambil data transaksi dari session
-        $transactions = session()->get('transactions', []);
+        $transactions = session('transactions', []);
 
-        // Cari index transaksi berdasarkan ID
-        $index = null;
-        foreach ($transactions as $key => $transaction) {
-            if ($transaction['id'] == $id) {
-                $index = $key;
-                break;
-            }
-        }
+        // Hapus transaksi berdasarkan ID
+        $transactions = array_filter($transactions, function ($transaction) use ($id) {
+            return $transaction['id'] != $id;
+        });
 
-        // Jika ditemukan, hapus transaksi dari array
-        if ($index !== null) {
-            unset($transactions[$index]);
+        // Simpan kembali ke session
+        session(['transactions' => array_values($transactions)]);
 
-            // Re-index array
-            $transactions = array_values($transactions);
-
-            // Simpan kembali ke session
-            session()->put('transactions', $transactions);
-
-            // Redirect ke halaman daftar transaksi setelah penghapusan
-            return redirect()->route('finance')->with('success', 'Transaksi berhasil dihapus.');
-        }
-
-        // Jika tidak ditemukan, redirect dengan pesan error
-        return redirect()->route('finance')->with('error', 'Transaksi tidak ditemukan.');
+        return redirect()->route('finance')->with('success', 'Transaksi berhasil dihapus.');
     }
 }
