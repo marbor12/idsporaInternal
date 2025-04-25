@@ -22,9 +22,9 @@
                                     <path d="m9 13 2 2 4-4" />
                                 </svg>
                             </div>
-                            <h3 class="font-medium">Projects</h3>
+                            <h3 class="font-medium">Events</h3>
                         </div>
-                        <p class="text-2xl font-bold">12</p>
+                        <p class="text-2xl font-bold">{{$totalEvents }}</p>
                     </div>
 
                     <div class="bg-white border rounded p-4">
@@ -38,9 +38,9 @@
                                     <polyline points="12 6 12 12 16 14" />
                                 </svg>
                             </div>
-                            <h3 class="font-medium">Time Tracked</h3>
+                            <h3 class="font-medium">Expenses</h3>
                         </div>
-                        <p class="text-2xl font-bold">20h 30m</p>
+                        <p class="text-2xl font-bold">Rp {{ number_format($totalExpenses, 0, ',', '.') }}</p>
                     </div>
 
                     <div class="bg-white border rounded p-4">
@@ -54,25 +54,24 @@
                             </div>
                             <h3 class="font-medium">Revenue</h3>
                         </div>
-                        <p class="text-2xl font-bold">$2,190</p>
+                        <p class="text-2xl font-bold">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
                     </div>
 
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
-                            <div
-                                class="w-8 h-8 rounded bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
+                            <div class="w-8 h-8 rounded bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
-                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                    <circle cx="9" cy="7" r="4" />
-                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 6v6l4 2" />
                                 </svg>
                             </div>
-                            <h3 class="font-medium">Team Members</h3>
+                            <h3 class="font-medium">To-Do</h3>
                         </div>
-                        <p class="text-2xl font-bold">21</p>
+                        <p class="text-2xl font-bold">
+                            {{ collect($tasks)->where('status', 'pending')->count() }}
+                        </p>
                     </div>
                 </div>
 
@@ -89,63 +88,25 @@
                                 <th class="text-left py-2">Status</th>
                                 <th class="text-left py-2">Due Date</th>
                                 <th class="text-left py-2">PIC</th>
-                                <th class="text-left py-2">Add</th>
-                                <th class="text-left py-2">Evidence</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b">
-                                <td class="py-2">Create homepage design</td>
-                                <td class="py-2"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">In
-                                        Progress</span></td>
-                                <td class="py-2">Aug 15, 2024</td>
-                                <td class="py-2">Agvin</td>
-                                <td class="py-2"><a href="#" class="text-blue-500 text-sm">Add</a></td>
-                                <td class="py-2">
-                                    @if (false) 
-                                        <a href="#" class="text-blue-500 text-sm">Lihat</a>
-                                    @else
-                                        <span class="text-gray-500 text-sm">Belum tersedia</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="py-2">Database setup</td>
-                                <td class="py-2"><span
-                                        class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Completed</span></td>
-                                <td class="py-2">Aug 10, 2024</td>
-                                <td class="py-2">-</td>
-                                <td class="py-2"><a href="#" class="text-blue-500 text-sm">Add</a></td>
-                                <td class="py-2">
-                                    @if (true)
-                                        <a href="#" class="text-blue-500 text-sm">Lihat</a>
-                                    @else
-                                        <span class="text-gray-500 text-sm">Belum tersedia</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="py-2">User authentication</td>
-                                <td class="py-2"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">To
-                                        Do</span></td>
-                                <td class="py-2">Aug 20, 2024</td>
-                                <td class="py-2">-</td>
-                                <td class="py-2"><a href="#" class="text-blue-500 text-sm">Add</a></td>
-                                <td class="py-2">
-                                    @if (false)
-                                        <a href="#" class="text-blue-500 text-sm">Lihat</a>
-                                    @else
-                                        <span class="text-gray-500 text-sm">Belum tersedia</span>
-                                    @endif
-                                </td>
-                            </tr>
+                            @foreach ($recentTasks as $task)
+                                <tr class="border-b">
+                                    <td class="py-2">{{ $task['title'] ?? 'N/A' }}</td>
+                                    <td class="py-2">
+                                        <span class="px-2 py-1 rounded text-xs {{ $task['status'] === 'done' ? 'bg-green-100 text-green-800' : ($task['status'] === 'in_progress' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                                            {{ ucfirst(str_replace('_', ' ', $task['status'] ?? 'Unknown')) }}
+                                        </span>
+                                    </td>
+                                    <td class="py-2">
+                                        {{ isset($task['deadline']) ? \Carbon\Carbon::parse($task['deadline'])->format('d M Y') : 'N/A' }}
+                                    </td>
+                                    <td class="py-2">{{ $task['assigned_to'] ?? 'N/A' }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
-
-                    <div class="flex justify-end mt-4">
-                        <a href="{{ route('tasks') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">View All</a>
-
-                    </div>
                 </div>
 
 
