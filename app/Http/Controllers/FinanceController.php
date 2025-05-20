@@ -37,6 +37,9 @@ class FinanceController extends Controller
         // Ambil transaksi dari session
         $transactions = session('transactions', []);
 
+
+        // Jika bulan diinputkan, filter berdasarkan bul
+
         // Hitung total revenue
         $totalRevenue = array_reduce($transactions, function ($carry, $item) {
             return $carry + ($item['category'] === 'revenue' ? (int) $item['amount'] : 0);
