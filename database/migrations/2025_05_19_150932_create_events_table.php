@@ -15,7 +15,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamp('event_date');
             $table->String('venue')->nullable();
-            $table->integet('capacity')->nullable();
+            $table->integer('capacity')->nullable();
             $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');
             $table->timestamps();
         });
