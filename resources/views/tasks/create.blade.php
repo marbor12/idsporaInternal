@@ -28,7 +28,7 @@
 
                 <div>
                     <label for="deadline" class="block font-semibold mb-1">Deadline</label>
-                    <input type="date" name="deadline" id="deadline" class="w-full border rounded px-4 py-2" required>
+                    <input type="date" name="deadline" id="deadline" class="w-full border rounded px-4 py-2" required min="{{ date('Y-m-d') }}">
                 </div>
 
                 <div>

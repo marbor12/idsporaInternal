@@ -45,12 +45,12 @@
         <div class="flex items-center">
             <div class="w-8 h-8 bg-gray-300 rounded-full mr-3"></div>
             <div class="relative flex-1">
-                <p class="font-medium">John Doe</p>
-                <p class="text-xs text-gray-500">john@example.com</p>
+                <p class="font-medium">MarStePin</p>
+                <p class="text-xs text-gray-500">hachi@gmail.com</p>
 
                 <!-- Icon Settings -->
                 <div class="absolute right-0 bottom-0 top-1/2 -translate-y-1/2">
-                    <svg xmlns="http://www.w3.org/2000/svg"
+                    <svg xmlns="https://drive.google.com/file/d/1_BseJWEnRwQnwTHM2cNj_lC2kOqJWi0K/view?usp=sharing"
                         class="w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

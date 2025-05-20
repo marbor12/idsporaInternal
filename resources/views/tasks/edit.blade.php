@@ -37,7 +37,7 @@
                         <label class="block text-sm font-medium text-gray-700">Deadline</label>
                         <input type="date" name="deadline" value="{{ $task['deadline'] }}"
                             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-300"
-                            required>
+                            required min = "{{  date('Y-m-d') }}">
                     </div>
 
                     <div class="mb-4">
