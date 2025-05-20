@@ -208,10 +208,6 @@
     }
   }
 
-  // Data dari controller
-  let monthlyData = @json($monthlyData);
-  let expenseData = @json($expenseData);
-
 
 
   // Format angka ke format Rupiah
