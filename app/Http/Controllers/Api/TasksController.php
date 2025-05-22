@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Tasks;
 use Illuminate\Http\Request;
+use App\Http\Resources\TasksResource;
 
 class TasksController extends Controller
 {
@@ -32,15 +33,11 @@ class TasksController extends Controller
 
 
     public function show($id)
-    {
-        $task = Tasks::find($id);
-
-        if (!$task) {
-            return response()->json(['message' => 'Task not found'], 404);
-        }
-
-        return response()->json($task);
-    }
+{
+    $task = Tasks::find($id);
+    if (!$task) return response()->json(['message' => 'Task not found'], 404);
+    return new TasksResource($task);
+}
 
     public function update(Request $request, $id)
     {
@@ -52,7 +49,7 @@ class TasksController extends Controller
             'title'=>'sometimes|required|string',
             'description'=>'sometimes|required|string',
             'event_id'=>'sometimes|required|exists:events,id',
-            'assigned_to'=>'sometimes|exists:users,id',
+            'assigned_to'=>'sometimes|required|exists:users,id',
             'due_date'=>'sometimes|nullable|date',
             'status'=>'sometimes|nullable|in:pending,in_progress,completed',
         ]);
