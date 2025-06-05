@@ -41,10 +41,10 @@
     <!-- Tabs -->
     <div class="mb-6">
       <div class="inline-flex bg-gray-100 rounded-lg p-1">
-        <button id="tab-ringkasan" onclick="showTab('ringkasan')" class="px-4 py-2 text-sm font-medium bg-[#E8BB00] text-white rounded-md shadow">
+        <button id="tab-ringkasan" onclick="showTab('ringkasan')" class="px-4 py-2 text-sm font-medium bg-gray-800 text-white rounded-md shadow">
           Ringkasan
         </button>
-        <button id="tab-transaksi" onclick="showTab('transaksi')" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-[#E8BB00] rounded-md">
+        <button id="tab-transaksi" onclick="showTab('transaksi')" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-800 rounded-md">
           Transaksi
         </button>
       </div>
@@ -198,7 +198,7 @@
 
     document.getElementById("content-" + tab).classList.remove("hidden");
     document.getElementById("tab-" + tab).className =
-        "px-4 py-2 text-sm font-medium bg-orange-400 text-white shadow rounded-md";
+        "px-4 py-2 text-sm font-medium bg-gray-800 text-white shadow rounded-md";
   }
 
   function confirmDelete(transactionId) {

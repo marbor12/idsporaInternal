@@ -117,18 +117,19 @@
                     </div>
 
                     <ul class="space-y-3">
-                        <li class="border-b pb-2">
-                            <div class="font-medium">Team Meeting</div>
-                            <div class="text-sm text-gray-500">August 12, 2024 - 10:00 AM</div>
-                        </li>
-                        <li class="border-b pb-2">
-                            <div class="font-medium">Project Deadline</div>
-                            <div class="text-sm text-gray-500">August 15, 2024</div>
-                        </li>
-                        <li>
-                            <div class="font-medium">Client Presentation</div>
-                            <div class="text-sm text-gray-500">August 18, 2024 - 2:00 PM</div>
-                        </li>
+                        @forelse ($upcomingEvents as $event)
+                            <li class="border-b pb-2">
+                                <div class="font-medium">{{ $event->title }}</div>
+                                <div class="text-sm text-gray-500">
+                                    {{ \Carbon\Carbon::parse($event->date)->format('d M Y') }}
+                                    @if($event->time)
+                                        - {{ $event->time }}
+                                    @endif
+                                </div>
+                            </li>
+                        @empty
+                            <li class="text-gray-500">No upcoming events.</li>
+                        @endforelse
                     </ul>
                     <a href="{{ route('events') }}" class="text-blue-500">View All</a>
                 </div>

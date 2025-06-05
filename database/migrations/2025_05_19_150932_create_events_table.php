@@ -10,12 +10,15 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->String('title');
+            $table->string('title');
+            $table->date('date');
+            $table->time('time');
+            $table->enum('category', ['webinar','seminar','workshop','pelatihan','talkshow','lomba','bootcamp','kuliah_umum','diskusi','lainnya',])->default('lainnya');
+            $table->string('venue');
+            $table->integer('capacity');
+            $table->string('speaker');
+            $table->string('mc');
             $table->text('description')->nullable();
-            $table->timestamp('event_date');
-            $table->String('venue')->nullable();
-            $table->integet('capacity')->nullable();
             $table->enum('status', ['draft', 'submitted', 'approved', 'rejected'])->default('draft');
             $table->timestamps();
         });
