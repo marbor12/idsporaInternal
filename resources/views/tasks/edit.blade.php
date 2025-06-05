@@ -59,7 +59,7 @@
                     </div>
 
                     <div class="flex justify-end">
-                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded">
+                        <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded">
                             Update Task
                         </button>
                     </div>

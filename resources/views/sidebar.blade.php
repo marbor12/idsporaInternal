@@ -1,7 +1,7 @@
 <div class="w-56 bg-white border-r">
     <!-- Logo/Brand -->
     <div class="p-4 border-b">
-        <h2 class="font-bold text-xl">idSpora</h2>
+        <h2 class="font-bold text-xl text-gray-800">IdSpora</h2>
     </div>
 
     <!-- Navigation Links -->
@@ -9,31 +9,31 @@
         <ul class="space-y-1">
             <li>
                 <a href="{{ route('dashboard') }}"
-                    class="block px-4 py-2 rounded {{ request()->routeIs('dashboard') ? 'bg-orange-400 text-white' : 'hover:bg-gray-100' }}">
+                    class="block px-4 py-2 rounded {{ request()->routeIs('dashboard') ? 'bg-gray-900 text-white' : 'hover:bg-gray-100' }}">
                     Dashboard
                 </a>
             </li>
             <li>
                 <a href="{{ route('tasks') }}"
-                    class="block px-4 py-2 rounded {{ request()->routeIs('tasks') ? 'bg-orange-400 text-white' : 'hover:bg-gray-100' }}">
+                    class="block px-4 py-2 rounded {{ request()->routeIs('tasks') ? 'bg-gray-900 text-white' : 'hover:bg-gray-100' }}">
                     Tasks
                 </a>
             </li>
             <li>
                 <a href="{{ route('events') }}"
-                    class="block px-4 py-2 rounded {{ request()->routeIs('events') ? 'bg-orange-400 text-white' : 'hover:bg-gray-100' }}">
+                    class="block px-4 py-2 rounded {{ request()->routeIs('events') ? 'bg-gray-900 text-white' : 'hover:bg-gray-100' }}">
                     Events
                 </a>
             </li>
             <li>
                 <a href="{{ route('finance') }}"
-                    class="block px-4 py-2 rounded {{ request()->routeIs('finance') ? 'bg-orange-400 text-white' : 'hover:bg-gray-100' }}">
+                    class="block px-4 py-2 rounded {{ request()->routeIs('finance') ? 'bg-gray-900 text-white' : 'hover:bg-gray-100' }}">
                     Finance
                 </a>
             </li>
             <!-- <li>
                 <a href="{{ route('laporan') }}"
-                    class="block px-4 py-2 rounded {{ request()->routeIs('laporan') ? 'bg-orange-400 text-white' : 'hover:bg-gray-100' }}">
+                    class="block px-4 py-2 rounded {{ request()->routeIs('laporan') ? 'bg-gray-900 text-white' : 'hover:bg-gray-100' }}">
                     Laporan
                 </a>
             </li> -->

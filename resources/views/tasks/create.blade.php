@@ -46,8 +46,8 @@
                 </div>
 
                 <div class="flex justify-end mt-6">
-                    <a href="{{ route('tasks') }}" class="text-gray-600 hover:underline mr-4">Cancel</a>
-                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded">
+                    <a href="{{ route('tasks') }}" class="px-6 py-2 rounded text-gray-600 hover:underline mr-4">Cancel</a>
+                    <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded">
                         Save Task
                     </button>
                 </div>

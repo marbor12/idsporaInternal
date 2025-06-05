@@ -9,7 +9,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-2xl font-bold mb-4">Task Page</h1>
                     <a href="{{ route('tasks.create') }}">
-                        <button class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-md flex items-center">
+                        <button class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-md flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-5 h-5 mr-2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

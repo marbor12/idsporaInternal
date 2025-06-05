@@ -1,100 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body class="bg-warning">
-    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center p-4">
-        <div class="row bg-white rounded shadow-lg overflow-hidden w-100" style="max-width: 1000px;">
-            <!-- Form Section -->
-            <div class="col-lg-6 p-5">
-                <div class="mb-4">
-                    <i class="fas fa-bolt text-warning fs-2"></i>
+@extends('app')
+
+@section('content')
+<body class="bg-white min-h-screen flex items-center justify-center">
+
+    <div class="w-full min-h-screen grid grid-cols-1 md:grid-cols-2">
+        
+        <!-- Left Side - Illustration -->
+        <div class="hidden md:flex items-center justify-center bg-gray-100">
+            <img src="{{ asset('images/idspora_logo.svg') }}" alt="Idspora Logo" class="max-h-60 w-auto">
+        </div>
+        
+        <!-- Right Side - Login Form -->
+        <div class="flex flex-col justify-center px-6 py-12">
+            <h2 class="text-4xl font-bold mb-6 text-gray-800 text-center">Login</h2>
+
+            <form method="POST" action="{{ route('login') }}" class="w-full max-w-md mx-auto space-y-5">
+                @csrf
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block font-medium text-gray-700 mb-1">Email</label>
+                    <div class="flex items-center border rounded-md overflow-hidden">
+                        <span class="px-3 bg-white border-r text-gray-400">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.94 6.94A1.5 1.5 0 0 1 4.5 6h11a1.5 1.5 0 0 1 1.56.94L10 11.586 2.94 6.94z"/>
+                                <path d="M2 8.5v6A1.5 1.5 0 0 0 3.5 16h13a1.5 1.5 0 0 0 1.5-1.5v-6l-7.5 4.5L2 8.5z"/>
+                            </svg>
+                        </span>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email"
+                            placeholder="you@example.com"
+                            class="w-full px-3 py-2 outline-none text-sm"
+                            value="{{ old('email') }}" 
+                            required>
+                    </div>
+                    @error('email')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-                
-                <h1 class="fw-bold mb-3 display-6">Welcome back</h1>
-                <p class="text-muted mb-4 lead">Sign in to access your account and continue your journey.</p>
-                
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="email" class="form-label fw-semibold">Email</label>
-                        <input type="email" class="form-control form-control-lg" id="email" name="email" 
-                               value="{{ old('email') }}" placeholder="Your email" required>
-                        @error('email')
-                            <div class="text-danger small mt-2">{{ $message }}</div>
-                        @enderror
+
+                <!-- Password -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label for="password" class="block font-medium text-gray-700">Password</label>
+                        {{-- <a href="#" class="text-sm text-yellow-500 hover:underline">Forgot Password?</a> --}}
                     </div>
-                    
-                    <div class="mb-4">
-                        <label for="password" class="form-label fw-semibold">Password</label>
-                        <input type="password" class="form-control form-control-lg" id="password" name="password" 
-                               placeholder="Your password" required>
-                        @error('password')
-                            <div class="text-danger small mt-2">{{ $message }}</div>
-                        @enderror
+                    <div class="flex items-center border rounded-md overflow-hidden">
+                        <span class="px-3 bg-white border-r text-gray-400">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v2H5a2 2 0 00-2 2v6a2 
+                                    2 0 002 2h10a2 2 0 002-2v-6a2 2 0 
+                                    00-2-2h-1V6a4 4 0 00-4-4zm-2 
+                                    6V6a2 2 0 114 0v2H8z" clip-rule="evenodd" />
+                            </svg>
+                        </span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password"
+                            placeholder="••••••••"
+                            class="w-full px-3 py-2 outline-none text-sm"
+                            required>
                     </div>
-                    
-                    <button type="submit" class="btn btn-warning btn-lg w-100 fw-semibold mb-4 text-white">Sign in</button>
-                </form>
-                
-                <div class="text-center mb-4">
-                    <div class="d-flex align-items-center">
-                        <hr class="flex-grow-1">
-                        <span class="px-3 text-muted">OR</span>
-                        <hr class="flex-grow-1">
-                    </div>
+                    @error('password')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-                
-                <div class="row g-3">
-                    <div class="col-4">
-                        <button class="btn btn-outline-secondary w-100 py-3">
-                            <i class="fab fa-google fs-5"></i>
-                        </button>
-                    </div>
-                    <div class="col-4">
-                        <button class="btn btn-outline-secondary w-100 py-3">
-                            <i class="fab fa-facebook-f fs-5"></i>
-                        </button>
-                    </div>
-                    <div class="col-4">
-                        <button class="btn btn-outline-secondary w-100 py-3">
-                            <i class="fab fa-apple fs-5"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Testimonial Section -->
-            <div class="col-lg-6 bg-warning text-white p-5 d-flex flex-column justify-content-center position-relative d-none d-lg-flex">
-                <div class="mt-auto">
-                    <div class="bg-white bg-opacity-25 rounded p-4">
-                        <h4 class="fw-semibold mb-3">I was able to reduce the time taken to present high-level designs by 35% using the platform.</h4>
-                        <div>
-                            <div class="fw-semibold">Sara Bright</div>
-                            <small class="opacity-75">Freelance Designer</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="position-absolute bottom-0 end-0 p-4">
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-light rounded-circle p-2" style="width: 45px; height: 45px;">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="btn btn-outline-light rounded-circle p-2" style="width: 45px; height: 45px;">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+
+                <!-- Submit -->
+                <button type="submit" class="w-full bg-gray-800 text-white py-2 rounded-md hover:bg-gray-900 transition font-semibold">
+                    Log In
+                </button>
+            </form>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
+@endsection
