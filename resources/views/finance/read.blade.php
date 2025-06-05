@@ -105,13 +105,13 @@
       <div class="bg-white shadow rounded p-4">
         <h2 class="text-xl font-semibold mb-1">All transaction</h2>
         <p class="text-sm text-gray-500 mb-4">Daftar semua transaksi dalam periode yang dipilih</p>
-        <!-- <div class="flex items-center space-x-2 mb-4">
+        <div class="flex items-center space-x-2 mb-4">
           <button class="border px-3 py-1 rounded">Filter</button>
           <button class="bg-gray-200 px-3 py-1 rounded">All</button>
           <button class="bg-green-100 text-green-600 px-3 py-1 rounded">↑ Revenue</button>
           <button class="bg-red-100 text-red-600 px-3 py-1 rounded">↓ Expense</button>
         </div>
-        <input type="text" placeholder="Cari transaksi..." class="w-full border px-3 py-2 rounded mb-4"> -->
+        <input type="text" placeholder="Cari transaksi..." class="w-full border px-3 py-2 rounded mb-4">
 
         <div class="overflow-x-auto">
           <table class="w-full table-auto text-left text-sm">
@@ -207,10 +207,6 @@
       form.submit();
     }
   }
-
-  // Data dari controller
-  let monthlyData = @json($monthlyData);
-  let expenseData = @json($expenseData);
 
 
 
