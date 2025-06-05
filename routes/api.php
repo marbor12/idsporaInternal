@@ -7,9 +7,9 @@ use App\Http\Controllers\Api\TasksController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\FinanceController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
 
 
 Route::prefix('events')->group(function () {
