@@ -2,42 +2,47 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Events;
+use App\Models\Tasks;
+use App\Models\FinancialReport;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Ambil data tasks dari session atau gunakan array kosong jika tidak ada
-        $tasks = session('tasks', []);
-
-        // Ambil data events dari session atau gunakan array kosong jika tidak ada
-        $events = session('events', []);
-
-        // Ambil data finance dari session atau gunakan array kosong jika tidak ada
-        $finance = session('transactions', []);
+        // Ambil data dari database
+        $tasks = Tasks::all();
+        $events = Events::all();
+        $finance = FinancialReport::all();
 
         // Hitung jumlah tasks dan events
-        $totalTasks = count($tasks);
-        $totalEvents = count($events);
+        $totalTasks = $tasks->count();
+        $totalEvents = $events->count();
 
         // Hitung total pendapatan dari finance
-        $totalRevenue = collect($finance)->where('category', 'revenue')->sum('amount');
+        $totalRevenue = $finance->where('category', 'revenue')->sum('amount');
 
         // Hitung total pengeluaran dari finance
-        $totalExpenses = collect($finance)->where('category', 'expenses')->sum('amount');
+        $totalExpenses = $finance->where('category', 'expenses')->sum('amount');
 
-        // Filter tasks untuk status tertentu
-        $recentTasks = collect($tasks)->sortByDesc('deadline')->take(3);
+        // Filter tasks terbaru (misal berdasarkan deadline)
+        $recentTasks = $tasks->sortByDesc('deadline')->take(3);
 
         // Filter events untuk event mendatang
         $currentDate = date('Y-m-d');
-        $upcomingEvents = array_filter($events, function ($event) use ($currentDate) {
-        return $event['date'] >= $currentDate;
-        });
+        // $upcomingEvents = $events->where('date', '>', $currentDate);
+        $upcomingEvents = Events::where('date', '>', $currentDate)->get();
 
-        $totalEvents = count($events);
 
         // Kirim data ke view
-        return view('dashboard', compact('tasks', 'totalTasks', 'totalEvents', 'totalRevenue', 'recentTasks', 'upcomingEvents', 'totalExpenses'));
+        return view('dashboard', compact(
+            'tasks',
+            'totalTasks',
+            'totalEvents',
+            'totalRevenue',
+            'recentTasks',
+            'upcomingEvents',
+            'totalExpenses'
+        ));
     }
 }

@@ -37,7 +37,7 @@ Route::prefix('users')->group(function () {
 });
 
 
-// Route::apiResource('users', UserController::class);
+Route::apiResource('users', UserController::class);
 
 // BUDGETS
 Route::get('/finance/budgets', [FinanceController::class, 'getBudgets']);
