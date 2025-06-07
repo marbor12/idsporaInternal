@@ -17,18 +17,23 @@
                 </div>
 
                 <div>
-                    <label for="event" class="block font-semibold mb-1">Related Event</label>
-                    <input type="text" name="event" id="event" class="w-full border rounded px-4 py-2" required>
+                    <label for="event_id" class="block font-semibold mb-1">Related Event (ID)</label>
+                    <input type="number" name="event_id" id="event_id" class="w-full border rounded px-4 py-2" required>
                 </div>
 
                 <div>
-                    <label for="assigned_to" class="block font-semibold mb-1">Assigned To</label>
-                    <input type="text" name="assigned_to" id="assigned_to" class="w-full border rounded px-4 py-2" required>
+                    <label for="assigned_to" class="block font-semibold mb-1">Assigned To (User ID)</label>
+                    <input type="number" name="assigned_to" id="assigned_to" class="w-full border rounded px-4 py-2" required>
                 </div>
 
                 <div>
-                    <label for="deadline" class="block font-semibold mb-1">Deadline</label>
-                    <input type="date" name="deadline" id="deadline" class="w-full border rounded px-4 py-2" required min="{{ date('Y-m-d') }}">
+                    <label for="due_date" class="block font-semibold mb-1">Deadline</label>
+                    <input type="date" name="due_date" id="due_date" class="w-full border rounded px-4 py-2" required min="{{ date('Y-m-d') }}">
+                </div>
+
+                <div>
+                    <label for="description" class="block font-semibold mb-1">Description</label>
+                    <textarea name="description" id="description" class="w-full border rounded px-4 py-2"></textarea>
                 </div>
 
                 <div>

@@ -15,6 +15,7 @@
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
                             <div class="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
+                                <!-- SVG icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -24,13 +25,14 @@
                             </div>
                             <h3 class="font-medium">Events</h3>
                         </div>
-                        <p class="text-2xl font-bold">{{$totalEvents }}</p>
+                        <p class="text-2xl font-bold">{{ $totalEvents }}</p>
                     </div>
 
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
                             <div
                                 class="w-8 h-8 rounded bg-purple-100 flex items-center justify-center text-purple-600 mr-3">
+                                <!-- SVG icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -46,6 +48,7 @@
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
                             <div class="w-8 h-8 rounded bg-green-100 flex items-center justify-center text-green-600 mr-3">
+                                <!-- SVG icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -59,7 +62,9 @@
 
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
-                            <div class="w-8 h-8 rounded bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
+                            <div
+                                class="w-8 h-8 rounded bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
+                                <!-- SVG icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -70,7 +75,7 @@
                             <h3 class="font-medium">To-Do</h3>
                         </div>
                         <p class="text-2xl font-bold">
-                            {{ collect($tasks)->where('status', 'pending')->count() }}
+                            {{ $totalTasks }}
                         </p>
                     </div>
                 </div>
@@ -91,24 +96,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($recentTasks as $task)
+                            @forelse ($recentTasks as $task)
                                 <tr class="border-b">
-                                    <td class="py-2">{{ $task['title'] ?? 'N/A' }}</td>
+                                    <td class="py-2">{{ $task->title ?? 'N/A' }}</td>
                                     <td class="py-2">
-                                        <span class="px-2 py-1 rounded text-xs {{ $task['status'] === 'done' ? 'bg-green-100 text-green-800' : ($task['status'] === 'in_progress' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                                            {{ ucfirst(str_replace('_', ' ', $task['status'] ?? 'Unknown')) }}
+                                        <span class="px-2 py-1 rounded text-xs 
+                                                    @if($task->status === 'completed') bg-green-100 text-green-800 
+                                                    @elseif($task->status === 'in_progress') bg-yellow-100 text-yellow-800 
+                                                    @else bg-red-100 text-red-800 @endif">
+                                            {{ ucfirst(str_replace('_', ' ', $task->status ?? 'Unknown')) }}
                                         </span>
                                     </td>
                                     <td class="py-2">
-                                        {{ isset($task['deadline']) ? \Carbon\Carbon::parse($task['deadline'])->format('d M Y') : 'N/A' }}
+                                        {{ $task->due_date ? \Carbon\Carbon::parse($task->due_date)->format('d M Y') : 'N/A' }}
                                     </td>
-                                    <td class="py-2">{{ $task['assigned_to'] ?? 'N/A' }}</td>
+                                    <td class="py-2">{{ $task->assigned_to ?? 'N/A' }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-gray-500">No recent tasks found.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
-
 
                 <!-- Events Section -->
                 <div class="bg-white border rounded p-4">

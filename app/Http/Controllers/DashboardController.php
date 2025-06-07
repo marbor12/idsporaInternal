@@ -16,7 +16,8 @@ class DashboardController extends Controller
         $finance = FinancialReport::all();
 
         // Hitung jumlah tasks dan events
-        $totalTasks = $tasks->count();
+
+        $totalTasks = Tasks::where('status', 'in_progress')->count();
         $totalEvents = $events->count();
 
         // Hitung total pendapatan dari finance
