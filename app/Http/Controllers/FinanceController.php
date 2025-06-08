@@ -24,7 +24,6 @@ class FinanceController extends Controller
             'totalRevenue' => $totalRevenue,
             'totalExpenses' => $totalExpenses,
             'netBalance' => $netBalance,
-            // ...tambahkan data grafik jika perlu
         ]);
     }
 
@@ -44,7 +43,7 @@ class FinanceController extends Controller
             'date' => 'required|date',
         ]);
         FinancialReport::create($validated);
-        return redirect()->route('finance')->with('success', 'Transaksi berhasil ditambahkan.');
+        return redirect()->route('finance.index')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -65,13 +64,13 @@ class FinanceController extends Controller
         ]);
         $transaction = FinancialReport::findOrFail($id);
         $transaction->update($validated);
-        return redirect()->route('finance')->with('success', 'Transaksi berhasil diperbarui.');
+        return redirect()->route('finance.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         $transaction = FinancialReport::findOrFail($id);
         $transaction->delete();
-        return redirect()->route('finance')->with('success', 'Transaksi berhasil dihapus.');
+        return redirect()->route('finance.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 }
