@@ -10,4 +10,9 @@ class Events extends Model
     protected $fillable = [
         'title', 'date', 'time', 'category', 'venue', 'capacity', 'speaker', 'mc', 'description'
     ];
+
+    public function needs()
+    {
+        return $this->hasMany(\App\Models\Need::class, 'event_id');
+    }
 }

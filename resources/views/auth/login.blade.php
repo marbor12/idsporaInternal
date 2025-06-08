@@ -45,9 +45,8 @@
                 <div>
                     <div class="flex justify-between items-center mb-1">
                         <label for="password" class="block font-medium text-gray-700">Password</label>
-                        {{-- <a href="#" class="text-sm text-yellow-500 hover:underline">Forgot Password?</a> --}}
                     </div>
-                    <div class="flex items-center border rounded-md overflow-hidden">
+                    <div class="flex items-center border rounded-md overflow-hidden relative">
                         <span class="px-3 bg-white border-r text-gray-400">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v2H5a2 2 0 00-2 2v6a2 
@@ -63,6 +62,18 @@
                             placeholder="••••••••"
                             class="w-full px-3 py-2 outline-none text-sm"
                             required>
+
+                        <!-- Toggle button -->
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 
+                                    9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
                     </div>
                     @error('password')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -77,6 +88,34 @@
         </div>
     </div>
 
+    <!-- Script to toggle password visibility -->
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 
+                        9.956 0 012.117-3.362m3.242-2.318A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 
+                        9.542 7a9.96 9.96 0 01-4.293 5.07M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3l18 18" />
+                `;
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 
+                        9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                `;
+            }
+        }
+    </script>
+
 </body>
-</html>
 @endsection

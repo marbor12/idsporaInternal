@@ -2,24 +2,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Tasks; 
+use App\Models\Tasks;
+use App\Models\Events;
+use App\Models\User;
+use App\Notifications\TaskApprovalNotification;
 
 class TasksController extends Controller
 {
     public function index()
     {
-        // Ambil data tasks dari sesi, jika tidak ada, gunakan array kosong
-        $tasks = Tasks::all(); 
+        $tasks = Tasks::with(['assignedUser', 'event'])->get();
         return view('tasks.index', compact('tasks'));
     }
 
     public function create()
     {
-        return view('tasks.create');
+        if (auth()->user()->role !== 'coo') {
+            abort(403, 'Unauthorized');
+        }
+        $events = Events::all();
+        $users = User::all();
+        return view('tasks.create', compact('events', 'users'));
     }
 
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'coo') {
+            abort(403, 'Unauthorized');
+        }
         $validated = $request->validate([
             'title' => 'required|string',
             'description' => 'nullable|string',
@@ -29,16 +39,26 @@ class TasksController extends Controller
             'status' => 'required|string',
         ]);
         Tasks::create($validated);
-        return redirect()->route('tasks');
+        return redirect()->route('tasks.index');
     }
+
     public function edit($id)
     {
+        if (auth()->user()->role !== 'coo') {
+            abort(403, 'Unauthorized');
+        }
+        $events = Events::all();
+        $users = User::all();
         $task = Tasks::findOrFail($id);
-        return view('tasks.edit', compact('task'));
+
+        return view('tasks.edit', compact('task', 'events', 'users'));
     }
-    
+
     public function update(Request $request, $id)
     {
+        if (strtolower(auth()->user()->role) !== 'coo') {
+            abort(403, 'Unauthorized');
+        }
         $validated = $request->validate([
             'title' => 'required|string',
             'description' => 'nullable|string',
@@ -49,13 +69,41 @@ class TasksController extends Controller
         ]);
         $task = Tasks::findOrFail($id);
         $task->update($validated);
-        return redirect()->route('tasks');
+        return redirect()->route('tasks.index');
     }
 
     public function destroy($id)
     {
+        if (strtolower(auth()->user()->role) !== 'coo') {
+            abort(403, 'Unauthorized');
+        }
         $task = Tasks::findOrFail($id);
         $task->delete();
-        return redirect()->route('tasks');
+        return redirect()->route('tasks.index');
+    }
+    public function approve($id)
+    {
+        if (strtolower(auth()->user()->role) !== 'ceo') {
+            abort(403, 'Unauthorized');
+        }
+
+        $task = Tasks::findOrFail($id);
+        $task->approval_status = 'approved';
+        $task->save();
+        
+        return redirect()->route('tasks.index')->with('success', 'Task approved!');
+    }
+
+    public function reject($id)
+    {
+        if (strtolower(auth()->user()->role) !== 'ceo') {
+            abort(403, 'Unauthorized');
+        }
+
+        $task = Tasks::findOrFail($id);
+        $task->approval_status = 'rejected';
+        $task->save();
+
+        return redirect()->route('tasks.index')->with('success', 'Task rejected!');
     }
 }

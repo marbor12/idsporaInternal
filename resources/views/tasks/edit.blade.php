@@ -8,36 +8,48 @@
             <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
                 <h2 class="text-2xl font-bold mb-6">Edit Task</h2>
 
-                <form action="{{ route('tasks.update', $task['id']) }}" method="POST">
+                <form action="{{ route('tasks.update', $task->id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Title</label>
-                        <input type="text" name="title" value="{{ $task['title'] }}"
+                        <input type="text" name="title" value="{{ $task->title }}"
                             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-300"
                             required>
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Event</label>
-                        <input type="text" name="event" value="{{ $task['event'] }}"
+                        <select name="event_id"
                             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-300"
                             required>
+                            @foreach($events as $event)
+                                <option value="{{ $event->id }}" {{ $task->event_id == $event->id ? 'selected' : '' }}>
+                                    {{ $event->title }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Assigned To</label>
-                        <input type="text" name="assigned_to" value="{{ $task['assigned_to'] }}"
+                        <select name="assigned_to"
                             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-300"
                             required>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}" {{ $task->assigned_to == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name }} ({{ $user->role }})
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Deadline</label>
-                        <input type="date" name="deadline" value="{{ $task['deadline'] }}"
+                        <input type="date" name="due_date" value="{{ $task->due_date }}"
                             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-300"
-                            required min = "{{  date('Y-m-d') }}">
+                            required min="{{ date('Y-m-d') }}">
                     </div>
 
                     <div class="mb-4">
@@ -45,16 +57,15 @@
                         <select name="status"
                             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-300"
                             required>
-                            <option value="pending" {{ $task['status'] === 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="in_progress" {{ $task['status'] === 'in_progress' ? 'selected' : '' }}>In Progress
-                            </option>
-                            <option value="done" {{ $task['status'] === 'done' ? 'selected' : '' }}>Done</option>
+                            <option value="pending" {{ $task->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="in_progress" {{ $task->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                            <option value="done" {{ $task->status === 'done' ? 'selected' : '' }}>Done</option>
                         </select>
                     </div>
 
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700">Evidence (URL)</label>
-                        <input type="url" name="evidence" value="{{ $task['evidence'] }}"
+                        <input type="url" name="evidence" value="{{ $task->evidence }}"
                             class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:outline-none focus:ring focus:ring-orange-300">
                     </div>
 

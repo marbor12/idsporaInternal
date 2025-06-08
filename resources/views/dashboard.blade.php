@@ -2,10 +2,8 @@
 
 @section('content')
     <div class="flex h-screen bg-gray-50">
-        <!-- Sidebar -->
         @include('sidebar')
 
-        <!-- Main Content -->
         <div class="flex-1 overflow-auto p-4">
             <div>
                 <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
@@ -15,7 +13,6 @@
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
                             <div class="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
-                                <!-- SVG icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -25,14 +22,11 @@
                             </div>
                             <h3 class="font-medium">Events</h3>
                         </div>
-                        <p class="text-2xl font-bold">{{ $totalEvents }}</p>
+                        <p class="text-2xl font-bold">{{ $totalEvents ?? 0 }}</p>
                     </div>
-
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
-                            <div
-                                class="w-8 h-8 rounded bg-purple-100 flex items-center justify-center text-purple-600 mr-3">
-                                <!-- SVG icon -->
+                            <div class="w-8 h-8 rounded bg-purple-100 flex items-center justify-center text-purple-600 mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -42,13 +36,11 @@
                             </div>
                             <h3 class="font-medium">Expenses</h3>
                         </div>
-                        <p class="text-2xl font-bold">Rp {{ number_format($totalExpenses, 0, ',', '.') }}</p>
+                        <p class="text-2xl font-bold">Rp {{ number_format($totalExpenses ?? 0, 0, ',', '.') }}</p>
                     </div>
-
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
                             <div class="w-8 h-8 rounded bg-green-100 flex items-center justify-center text-green-600 mr-3">
-                                <!-- SVG icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -57,14 +49,11 @@
                             </div>
                             <h3 class="font-medium">Revenue</h3>
                         </div>
-                        <p class="text-2xl font-bold">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
+                        <p class="text-2xl font-bold">Rp {{ number_format($totalRevenue ?? 0, 0, ',', '.') }}</p>
                     </div>
-
                     <div class="bg-white border rounded p-4">
                         <div class="flex items-center mb-2">
-                            <div
-                                class="w-8 h-8 rounded bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
-                                <!-- SVG icon -->
+                            <div class="w-8 h-8 rounded bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -74,18 +63,35 @@
                             </div>
                             <h3 class="font-medium">To-Do</h3>
                         </div>
-                        <p class="text-2xl font-bold">
-                            {{ $totalTasks }}
-                        </p>
+                        <p class="text-2xl font-bold">{{ $totalTasks ?? 0 }}</p>
                     </div>
                 </div>
+
+                                <!-- COO: Tombol Buat Task Baru -->
+                @if(Auth::check() && Auth::user()->role === 'coo')
+                    <div class="mb-4">
+                        <a href="{{ route('tasks.create') }}"
+                           class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-semibold">
+                            + Buat Task Baru
+                        </a>
+                    </div>
+                @endif
+                
+                <!-- PM: Tombol Buat Event Baru -->
+                @if(Auth::check() && Auth::user()->role === 'pm')
+                    <div class="mb-4">
+                        <a href="{{ route('events.create') }}"
+                           class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold">
+                            + Buat Event Baru
+                        </a>
+                    </div>
+                @endif
 
                 <!-- Tasks Section -->
                 <div class="bg-white border rounded p-4 mb-6">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-lg font-bold">Recent Tasks</h2>
                     </div>
-
                     <table class="w-full">
                         <thead>
                             <tr class="border-b">
@@ -96,7 +102,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($recentTasks as $task)
+                            @forelse ($recentTasks ?? [] as $task)
                                 <tr class="border-b">
                                     <td class="py-2">{{ $task->title ?? 'N/A' }}</td>
                                     <td class="py-2">
@@ -119,6 +125,7 @@
                             @endforelse
                         </tbody>
                     </table>
+                    <a href="{{ route('tasks.index') }}" class="text-blue-500">View All</a>
                 </div>
 
                 <!-- Events Section -->
@@ -126,9 +133,8 @@
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-lg font-bold">Upcoming Events</h2>
                     </div>
-
                     <ul class="space-y-3">
-                        @forelse ($upcomingEvents as $event)
+                        @forelse ($upcomingEvents ?? [] as $event)
                             <li class="border-b pb-2">
                                 <div class="font-medium">{{ $event->title }}</div>
                                 <div class="text-sm text-gray-500">
@@ -142,7 +148,7 @@
                             <li class="text-gray-500">No upcoming events.</li>
                         @endforelse
                     </ul>
-                    <a href="{{ route('events') }}" class="text-blue-500">View All</a>
+                    <a href="{{ route('events.index') }}" class="text-blue-500">View All</a>
                 </div>
             </div>
         </div>

@@ -16,13 +16,16 @@ class Tasks extends Model
         'assigned_to',
         'due_date',
         'status',
+        'approval_status', 
     ];
 
     // Relasi opsional
-    public function user()
+
+    public function assignedUser()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
+
 
     public function event()
     {

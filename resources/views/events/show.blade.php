@@ -11,7 +11,7 @@
                 <!-- Header -->
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-2xl font-bold">Event Details</h1>
-                    <a href="{{ route('events') }}"
+                    <a href="{{ route('events.index') }}"
                         class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors flex items-center gap-2 shadow-sm">
                         <!-- Tombol kembali ke halaman daftar event -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -29,30 +29,32 @@
                     <div class="bg-gradient-to-r from-orange-500 to-orange-400 p-6 relative">
                         <div class="absolute top-4 right-4 flex gap-2">
                             <!-- Tombol Edit -->
-                            <a href="{{ route('events.edit', $event['id']) }}"
-                                class="px-4 py-2 bg-white text-orange-600 rounded-md hover:bg-orange-50 transition-colors text-sm font-medium shadow-sm flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                                Edit
-                            </a>
-                            <!-- Tombol Hapus -->
-                            <form action="{{ route('events.destroy', $event['id']) }}" method="POST"
-                                onsubmit="return confirm('Are you sure you want to delete this event?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="px-4 py-2 bg-white text-red-600 rounded-md hover:bg-red-50 transition-colors text-sm font-medium shadow-sm flex items-center gap-1">
+                            @if(Auth::check() && Auth::user()->role === 'pm')
+                                <a href="{{ route('events.edit', $event['id']) }}"
+                                    class="px-4 py-2 bg-white text-orange-600 rounded-md hover:bg-orange-50 transition-colors text-sm font-medium shadow-sm flex items-center gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
-                                    Delete
-                                </button>
-                            </form>
+                                    Edit
+                                </a>
+                                <!-- Tombol Hapus -->
+                                <form action="{{ route('events.destroy', $event['id']) }}" method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-white text-red-600 rounded-md hover:bg-red-50 transition-colors text-sm font-medium shadow-sm flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Delete
+                                    </button>
+                                </form>
+                            @endif
                         </div>
 
                         <!-- Informasi Status Event -->
@@ -180,6 +182,47 @@
                         </div>
                     </div>
                 </div>
+
+                <hr class="my-8">
+
+                <h2 class="text-xl font-semibold mb-4">Kebutuhan Event</h2>
+                <table class="w-full border mb-4">
+                    <thead>
+                        <tr>
+                            <th>Kebutuhan</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($event->needs as $need)
+                            <tr>
+                                <td>{{ $need->description }}</td>
+                                <td>
+                                    <span class="px-2 py-1 rounded text-xs
+                                                    @if($need->status == 'draft') bg-gray-100 text-gray-800
+                                                    @elseif($need->status == 'submitted_to_ceo') bg-yellow-100 text-yellow-800
+                                                    @elseif($need->status == 'approved_by_ceo') bg-green-100 text-green-800
+                                                    @elseif($need->status == 'rejected_by_ceo') bg-red-100 text-red-800
+                                                    @endif">
+                                        {{ ucfirst(str_replace('_', ' ', $need->status)) }}
+                                    </span>
+                                </td>
+                                <td>{{ $need->approval_notes }}</td>
+                                <td>
+                                    @if(Auth::user()->role == 'pm' && $need->status == 'draft')
+                                        <form action="{{ route('needs.submitToCeo', $need->id) }}" method="POST">
+                                            @csrf
+                                            <button class="px-3 py-1 bg-blue-600 text-white rounded text-xs">Ajukan ke CEO</button>
+                                        </form>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
             </div>
         </div>
     </div>

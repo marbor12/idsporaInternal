@@ -22,6 +22,8 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            // Semua role redirect ke dashboard
             return redirect()->intended('/dashboard');
         }
 

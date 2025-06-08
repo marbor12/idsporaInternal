@@ -11,7 +11,6 @@ class EventController extends Controller
     public function index()
     {
         $events = Events::all();
-        // pisahkan upcoming & past:
         $currentDate = date('Y-m-d');
         $upcomingEvents = $events->where('date', '>', $currentDate);
         $pastEvents = $events->where('date', '<=', $currentDate);
@@ -19,15 +18,21 @@ class EventController extends Controller
         return view('events.read', compact('upcomingEvents', 'pastEvents'));
     }
 
-    // Menampilkan form untuk membuat event baru
+    // Menampilkan form untuk membuat event baru (hanya PM)
     public function create()
     {
+        if (strtolower(auth()->user()->role) !== 'pm') {
+            abort(403, 'Unauthorized');
+        }
         return view('events.create');
     }
 
-    // Menyimpan event baru ke database
+    // Menyimpan event baru ke database (hanya PM)
     public function store(Request $request)
     {
+        if (strtolower(auth()->user()->role) !== 'pm') {
+            abort(403, 'Unauthorized');
+        }
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'date' => 'required|date',
@@ -42,7 +47,7 @@ class EventController extends Controller
 
         Events::create($validated);
 
-        return redirect()->route('events')->with('success', 'Event created successfully!');
+        return redirect()->route('events.index')->with('success', 'Event created successfully!');
     }
 
     // Menampilkan detail event berdasarkan ID
@@ -52,16 +57,22 @@ class EventController extends Controller
         return view('events.show', compact('event'));
     }
 
-    // Menampilkan form untuk mengedit event
+    // Menampilkan form untuk mengedit event (hanya PM)
     public function edit($id)
     {
+        if (strtolower(auth()->user()->role) !== 'pm') {
+            abort(403, 'Unauthorized');
+        }
         $event = Events::findOrFail($id);
         return view('events.edit', compact('event'));
     }
 
-    // Memperbarui event berdasarkan ID
+    // Memperbarui event berdasarkan ID (hanya PM)
     public function update(Request $request, $id)
     {
+        if (strtolower(auth()->user()->role) !== 'pm') {
+            abort(403, 'Unauthorized');
+        }
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'date' => 'required|date',
@@ -77,15 +88,18 @@ class EventController extends Controller
         $event = Events::findOrFail($id);
         $event->update($validated);
 
-        return redirect()->route('events')->with('success', 'Event updated successfully!');
+        return redirect()->route('events.index')->with('success', 'Event updated successfully!');
     }
 
-    // Menghapus event berdasarkan ID
+    // Menghapus event berdasarkan ID (hanya PM)
     public function destroy($id)
     {
+        if (strtolower(auth()->user()->role) !== 'pm') {
+            abort(403, 'Unauthorized');
+        }
         $event = Events::findOrFail($id);
         $event->delete();
 
-        return redirect()->route('events')->with('success', 'Event deleted successfully!');
+        return redirect()->route('events.index')->with('success', 'Event deleted successfully!');
     }
 }
