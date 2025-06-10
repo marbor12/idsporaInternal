@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
             $table->foreignId('assigned_to')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('need_id')->nullable();
+            $table->foreign('need_id')->references('id')->on('needs')->onDelete('set null');
             $table->String('title');
             $table->text('description');
             $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');

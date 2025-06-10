@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Need;
 use App\Models\Events;
+use App\Models\Tasks; // pastikan import model Tasks
 
 class NeedController extends Controller
 {
@@ -88,7 +89,22 @@ class NeedController extends Controller
         $need->status = 'approved_by_ceo';
         $need->approval_notes = $request->notes;
         $need->save();
-        return back();
+
+        // Buat task jika belum ada
+        if (!$need->task) {
+            // Pastikan assigned_to diisi (COO atau null jika nullable)
+            Tasks::create([
+                'title' => $need->title,
+                'description' => $need->description,
+                'event_id' => $need->event_id,
+                'need_id' => $need->id,
+                'status' => 'pending',
+                'approval_status' => 'approved',
+                'assigned_to' => null, 
+            ]);
+        }
+
+        return back()->with('success', 'Kebutuhan sudah di-approve dan task dibuat!');
     }
 
     // Reject kebutuhan oleh CEO

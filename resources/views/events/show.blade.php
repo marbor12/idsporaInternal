@@ -208,6 +208,11 @@
                                                         Actions
                                                     </th>
                                                 @endif
+                                                @if(Auth::check() && Auth::user()->role === 'CEO')
+                                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                                                        Approval
+                                                    </th>
+                                                @endif
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-200">
@@ -265,6 +270,26 @@
                                                                     </button>
                                                                 </form>
                                                             </div>
+                                                        </td>
+                                                    @endif
+                                                    @if(Auth::check() && Auth::user()->role === 'CEO')
+                                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                            @if($need->status === 'submitted_to_ceo')
+                                                                <form action="{{ route('needs.approve', $need->id) }}" method="POST" class="inline">
+                                                                    @csrf
+                                                                    <input type="text" name="notes" placeholder="Komentar CEO" class="border rounded px-2 py-1 text-xs" />
+                                                                    <button type="submit" class="text-green-600 hover:text-green-900 ml-2">Approve</button>
+                                                                </form>
+                                                                <form action="{{ route('needs.reject', $need->id) }}" method="POST" class="inline">
+                                                                    @csrf
+                                                                    <input type="text" name="notes" placeholder="Komentar CEO" class="border rounded px-2 py-1 text-xs" />
+                                                                    <button type="submit" class="text-red-600 hover:text-red-900 ml-2">Reject</button>
+                                                                </form>
+                                                            @else
+                                                                <span class="text-gray-400 text-xs">
+                                                                    {{ ucfirst(str_replace('_', ' ', $need->status)) }}
+                                                                </span>
+                                                            @endif
                                                         </td>
                                                     @endif
                                                 </tr>

@@ -11,7 +11,7 @@ class TasksController extends Controller
 {
     public function index()
     {
-        $tasks = Tasks::all();
+        $tasks = Tasks::where('approval_status', 'approved')->get();
         return response()->json(["data" => $tasks]);
     }
 
