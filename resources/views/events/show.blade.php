@@ -2,18 +2,15 @@
 
 @section('content')
     <div class="flex h-screen bg-gray-50">
-        <!-- Sidebar -->
         @include('sidebar')
 
-        <!-- Main Content -->
         <div class="flex-1 overflow-auto p-4">
             <div>
                 <!-- Header -->
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-2xl font-bold">Event Details</h1>
-                    <a href="{{ route('events.index') }}"
+                    <a href="{{ route('events.read') }}"
                         class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors flex items-center gap-2 shadow-sm">
-                        <!-- Tombol kembali ke halaman daftar event -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd"
                                 d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
@@ -28,8 +25,7 @@
                     <!-- Header Event dengan Background -->
                     <div class="bg-gradient-to-r from-orange-500 to-orange-400 p-6 relative">
                         <div class="absolute top-4 right-4 flex gap-2">
-                            <!-- Tombol Edit -->
-                            @if(Auth::check() && Auth::user()->role === 'pm')
+                            @if(Auth::check() && Auth::user()->role === 'PM')
                                 <a href="{{ route('events.edit', $event['id']) }}"
                                     class="px-4 py-2 bg-white text-orange-600 rounded-md hover:bg-orange-50 transition-colors text-sm font-medium shadow-sm flex items-center gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
@@ -39,7 +35,6 @@
                                     </svg>
                                     Edit
                                 </a>
-                                <!-- Tombol Hapus -->
                                 <form action="{{ route('events.destroy', $event['id']) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this event?');">
                                     @csrf
@@ -57,16 +52,11 @@
                             @endif
                         </div>
 
-                        <!-- Informasi Status Event -->
                         <div class="mt-4 text-white">
                             <h2 class="text-2xl font-bold mb-2">{{ $event['title'] }}</h2>
-
-                            <!-- Event Status Badge -->
                             @php
                                 $eventDate = \Carbon\Carbon::parse($event['date']);
                                 $now = \Carbon\Carbon::now();
-
-                                //Status Event
                                 if ($eventDate->isFuture()) {
                                     $statusClass = 'bg-green-500';
                                     $statusText = 'Upcoming';
@@ -78,13 +68,10 @@
                                     $statusText = 'Past';
                                 }
                             @endphp
-
                             <span
                                 class="inline-block {{ $statusClass }} text-white text-xs font-semibold px-3 py-1 rounded-full">
                                 {{ $statusText }}
                             </span>
-
-                            <!-- Tanggal dan Waktu Event -->
                             <div class="flex items-center mt-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -111,7 +98,6 @@
                                 </div>
                                 <p class="text-gray-800 font-semibold">{{ ucfirst($event['category']) }}</p>
                             </div>
-
                             <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
                                 <div class="flex items-center mb-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500 mr-2" fill="none"
@@ -125,7 +111,6 @@
                                 </div>
                                 <p class="text-gray-800 font-semibold">{{ $event['venue'] }}</p>
                             </div>
-
                             <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
                                 <div class="flex items-center mb-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500 mr-2" fill="none"
@@ -156,7 +141,6 @@
                                         <p class="font-medium">{{ $event['speaker'] }}</p>
                                     </div>
                                 </div>
-
                                 <div class="flex items-start">
                                     <div class="bg-orange-100 rounded-full p-2 mr-3">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-600" fill="none"
@@ -180,49 +164,68 @@
                                 <p>{{ $event['description'] }}</p>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <hr class="my-8">
-
-                <h2 class="text-xl font-semibold mb-4">Kebutuhan Event</h2>
-                <table class="w-full border mb-4">
-                    <thead>
-                        <tr>
-                            <th>Kebutuhan</th>
-                            <th>Status</th>
-                            <th>Notes</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($event->needs as $need)
-                            <tr>
-                                <td>{{ $need->description }}</td>
-                                <td>
-                                    <span class="px-2 py-1 rounded text-xs
+                        <!-- Kebutuhan Event -->
+                        <div class="mt-8">
+                            <div class="flex justify-between items-center mb-3 border-b pb-2">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-0">Kebutuhan Event</h3>
+                                @if(Auth::check() && Auth::user()->role === 'PM')
+                                    <a href="{{ route('needs.create', ['event_id' => $event['id']]) }}"
+                                        class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                            fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        Add Kebutuhan
+                                    </a>
+                                @endif
+                            </div>
+                            <table class="w-full border mb-4">
+                                <thead>
+                                    <tr>
+                                        <th>Kebutuhan</th>
+                                        <th>Status</th>
+                                        <th>Notes</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($event->needs as $need)
+                                        <tr>
+                                            <td>{{ $need->description }}</td>
+                                            <td>
+                                                <span class="px-2 py-1 rounded text-xs
                                                     @if($need->status == 'draft') bg-gray-100 text-gray-800
                                                     @elseif($need->status == 'submitted_to_ceo') bg-yellow-100 text-yellow-800
                                                     @elseif($need->status == 'approved_by_ceo') bg-green-100 text-green-800
                                                     @elseif($need->status == 'rejected_by_ceo') bg-red-100 text-red-800
                                                     @endif">
-                                        {{ ucfirst(str_replace('_', ' ', $need->status)) }}
-                                    </span>
-                                </td>
-                                <td>{{ $need->approval_notes }}</td>
-                                <td>
-                                    @if(Auth::user()->role == 'pm' && $need->status == 'draft')
-                                        <form action="{{ route('needs.submitToCeo', $need->id) }}" method="POST">
-                                            @csrf
-                                            <button class="px-3 py-1 bg-blue-600 text-white rounded text-xs">Ajukan ke CEO</button>
-                                        </form>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-
+                                                    {{ ucfirst(str_replace('_', ' ', $need->status)) }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $need->approval_notes }}</td>
+                                            <td class="py-2 space-x-2">
+                                                @if(Auth::check() && Auth::user()->role === 'PM')
+                                                    <a href="{{ route('needs.edit', $need->id) }}"
+                                                        class="text-blue-600 hover:underline">Edit</a>
+                                                    <form action="{{ route('needs.destroy', $need->id) }}" method="POST"
+                                                        class="inline" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:underline"
+                                                            onclick="return confirm('Are you sure you want to delete this need?')">Delete</button>
+                                                    </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,9 +1,10 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Events; // Pastikan model kamu bernama Events
+use App\Models\Events;
 
 class EventController extends Controller
 {
@@ -21,16 +22,15 @@ class EventController extends Controller
     // Menampilkan form untuk membuat event baru (hanya PM)
     public function create()
     {
-        if (strtolower(auth()->user()->role) !== 'pm') {
+        if (!auth()->check() || auth()->user()->role !== 'PM') {
             abort(403, 'Unauthorized');
         }
         return view('events.create');
     }
-
     // Menyimpan event baru ke database (hanya PM)
     public function store(Request $request)
     {
-        if (strtolower(auth()->user()->role) !== 'pm') {
+        if (auth()->user()->role !== 'PM') {
             abort(403, 'Unauthorized');
         }
         $validated = $request->validate([
@@ -60,7 +60,7 @@ class EventController extends Controller
     // Menampilkan form untuk mengedit event (hanya PM)
     public function edit($id)
     {
-        if (strtolower(auth()->user()->role) !== 'pm') {
+        if (auth()->user()->role !== 'PM') {
             abort(403, 'Unauthorized');
         }
         $event = Events::findOrFail($id);
@@ -70,7 +70,7 @@ class EventController extends Controller
     // Memperbarui event berdasarkan ID (hanya PM)
     public function update(Request $request, $id)
     {
-        if (strtolower(auth()->user()->role) !== 'pm') {
+        if (auth()->user()->role !== 'PM') {
             abort(403, 'Unauthorized');
         }
         $validated = $request->validate([
@@ -94,7 +94,7 @@ class EventController extends Controller
     // Menghapus event berdasarkan ID (hanya PM)
     public function destroy($id)
     {
-        if (strtolower(auth()->user()->role) !== 'pm') {
+        if (auth()->user()->role !== 'PM') {
             abort(403, 'Unauthorized');
         }
         $event = Events::findOrFail($id);

@@ -99,9 +99,9 @@
                                     </td>
                                     <td class="py-2">
                                         <span class="px-2 py-1 rounded text-xs
-                                                    @if($task->approval_status === 'approved') bg-green-100 text-green-800
-                                                    @elseif($task->approval_status === 'rejected') bg-red-100 text-red-800
-                                                    @else bg-gray-100 text-gray-800 @endif">
+                                                            @if($task->approval_status === 'approved') bg-green-100 text-green-800
+                                                            @elseif($task->approval_status === 'rejected') bg-red-100 text-red-800
+                                                            @else bg-gray-100 text-gray-800 @endif">
                                             {{ ucfirst($task->approval_status ?? 'waiting') }}
                                         </span>
                                     </td>
@@ -114,8 +114,7 @@
                                     </td>
                                     <td class="py-2 space-x-2">
                                         @if(Auth::check() && strtolower(Auth::user()->role) === 'coo')
-                                            <a href="{{ route('tasks.edit', $task->id) }}"
-                                                class="text-blue-600 hover:underline">
+                                            <a href="{{ route('tasks.edit', $task->id) }}" class="text-blue-600 hover:underline">
                                                 Edit
                                             </a>
                                             <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="inline"

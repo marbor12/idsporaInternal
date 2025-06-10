@@ -17,7 +17,7 @@ class TasksController extends Controller
 
     public function create()
     {
-        if (auth()->user()->role !== 'coo') {
+        if (auth()->user()->role !== 'COO') {
             abort(403, 'Unauthorized');
         }
         $events = Events::all();
@@ -27,7 +27,7 @@ class TasksController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'coo') {
+        if (auth()->user()->role !== 'COO') {
             abort(403, 'Unauthorized');
         }
         $validated = $request->validate([
@@ -44,7 +44,7 @@ class TasksController extends Controller
 
     public function edit($id)
     {
-        if (auth()->user()->role !== 'coo') {
+        if (auth()->user()->role !== 'COO') {
             abort(403, 'Unauthorized');
         }
         $events = Events::all();
@@ -56,7 +56,7 @@ class TasksController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (strtolower(auth()->user()->role) !== 'coo') {
+        if (auth()->user()->role !== 'COO') {
             abort(403, 'Unauthorized');
         }
         $validated = $request->validate([
@@ -74,7 +74,7 @@ class TasksController extends Controller
 
     public function destroy($id)
     {
-        if (strtolower(auth()->user()->role) !== 'coo') {
+        if (auth()->user()->role !== 'COO') {
             abort(403, 'Unauthorized');
         }
         $task = Tasks::findOrFail($id);
