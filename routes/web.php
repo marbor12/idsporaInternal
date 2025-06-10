@@ -15,8 +15,6 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
-
-
 //Route untuk tasks
 Route::resource('tasks', TasksController::class);
 Route::get('/tasks', [TasksController::class, 'index'])->name('tasks');
@@ -68,3 +66,17 @@ Route::get('/laporan', function () {
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+
+
+
+
+
+Route::get('/CFO/Dashboard', function () {
+    return view('CFO.Dashboard');
+})->name('CFO.dashboard');
+
+Route::get('/CFO/budgetReview', function () {
+    return view('CFO.BudgetReview');
+})->name('CFO.budgetReview');

@@ -18,6 +18,7 @@ class EventController extends Controller
     public function show($id)
     {
         $event = Events::find($id);
+        
         if (!$event) {
             return response()->json(['message' => 'Event not found.'], 404);
         }
