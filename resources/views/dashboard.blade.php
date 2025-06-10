@@ -1,5 +1,4 @@
 @extends('app')
-
 @section('content')
     <div class="flex h-screen bg-gray-50">
         @include('sidebar')

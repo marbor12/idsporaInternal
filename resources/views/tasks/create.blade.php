@@ -17,13 +17,23 @@
                 </div>
 
                 <div>
-                    <label for="event_id" class="block font-semibold mb-1">Related Event (ID)</label>
-                    <input type="number" name="event_id" id="event_id" class="w-full border rounded px-4 py-2" required>
+                    <label for="event_id" class="block font-semibold mb-1">Related Event</label>
+                    <select name="event_id" id="event_id" class="w-full border rounded px-4 py-2" required>
+                        <option value="">-- Select Event --</option>
+                        @foreach($events as $event)
+                            <option value="{{ $event->id }}">{{ $event->title }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
-                    <label for="assigned_to" class="block font-semibold mb-1">Assigned To (User ID)</label>
-                    <input type="number" name="assigned_to" id="assigned_to" class="w-full border rounded px-4 py-2" required>
+                    <label for="assigned_to" class="block font-semibold mb-1">Assigned To</label>
+                    <select name="assigned_to" id="assigned_to" class="w-full border rounded px-4 py-2" required>
+                        <option value="">-- Select User --</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->role }})</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
@@ -41,7 +51,7 @@
                     <select name="status" id="status" class="w-full border rounded px-4 py-2" required>
                         <option value="pending">Pending</option>
                         <option value="in_progress">In Progress</option>
-                        <option value="done">Done</option>
+                        <option value="completed">Completed</option>
                     </select>
                 </div>
 
@@ -51,7 +61,7 @@
                 </div>
 
                 <div class="flex justify-end mt-6">
-                    <a href="{{ route('tasks') }}" class="px-6 py-2 rounded text-gray-600 hover:underline mr-4">Cancel</a>
+                    <a href="{{ route('tasks.index') }}" class="px-6 py-2 rounded text-gray-600 hover:underline mr-4">Cancel</a>
                     <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded">
                         Save Task
                     </button>
