@@ -1,5 +1,4 @@
 @extends('app')
-<div>Role: {{ Auth::user()->role ?? '-' }}</div>
 
 @section('content')
     <div class="flex h-screen bg-gray-50">
@@ -138,10 +137,6 @@
                                         <h4 class="font-medium">{{ $event['title'] }}</h4>
                                         <div class="flex gap-2">
                                             @if(Auth::check() && Auth::user()->role === 'PM')
-                                                <a href="{{ route('events.edit', $event['id']) }}"
-                                                    class="px-3 py-1 bg-orange-100 text-orange-600 rounded hover:bg-orange-200 transition-colors text-sm font-medium">
-                                                    Edit
-                                                </a>
                                                 <form action="{{ route('events.destroy', $event['id']) }}" method="POST"
                                                     onsubmit="return confirm('Are you sure you want to delete this event?');">
                                                     @csrf

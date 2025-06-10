@@ -9,7 +9,7 @@
                 <!-- Header -->
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-2xl font-bold">Event Details</h1>
-                    <a href="{{ route('events.read') }}"
+                    <a href="{{ route('events.index') }}"
                         class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors flex items-center gap-2 shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd"
@@ -36,7 +36,7 @@
                                     Edit
                                 </a>
                                 <form action="{{ route('events.destroy', $event['id']) }}" method="POST"
-                                    onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                    onsubmit="return confirm('Are you sure you want to delete this event?');" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"

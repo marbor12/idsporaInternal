@@ -147,7 +147,7 @@
                             <li class="text-gray-500">No upcoming events.</li>
                         @endforelse
                     </ul>
-                    <a href="{{ route('events.read') }}" class="text-blue-500">View All</a>
+                    <a href="{{ route('events.index') }}" class="text-blue-500">View All</a>
                 </div>
             </div>
         </div>
