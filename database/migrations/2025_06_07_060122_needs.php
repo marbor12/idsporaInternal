@@ -11,6 +11,14 @@ return new class extends Migration
         Schema::create('needs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('event_id');
+            $table->string('title');
+            // $table->string('category');
+            $table->enum('category', [
+                'logistik',
+                'desain & media',
+                'dokumentasi & administrasi',
+                'konsumsi & sdm'
+            ]);
             $table->string('description');
             $table->string('status')->default('draft'); // draft, submitted_to_ceo, approved_by_ceo, rejected_by_ceo, etc
             $table->text('approval_notes')->nullable();

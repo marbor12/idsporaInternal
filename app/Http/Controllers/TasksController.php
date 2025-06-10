@@ -83,7 +83,7 @@ class TasksController extends Controller
     }
     public function approve($id)
     {
-        if (strtolower(auth()->user()->role) !== 'ceo') {
+        if (strtolower(auth()->user()->role) !== 'CEO') {
             abort(403, 'Unauthorized');
         }
 
@@ -96,7 +96,7 @@ class TasksController extends Controller
 
     public function reject($id)
     {
-        if (strtolower(auth()->user()->role) !== 'ceo') {
+        if (strtolower(auth()->user()->role) !== 'CEO') {
             abort(403, 'Unauthorized');
         }
 
