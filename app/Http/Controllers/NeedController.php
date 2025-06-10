@@ -8,7 +8,7 @@ use App\Models\Events;
 
 class NeedController extends Controller
 {
-    // Tampilkan daftar kebutuhan yang menunggu approval CEO
+    // Daftar kebutuhan yang menunggu approval CEO
     public function approvalList()
     {
         $needs = Need::with('event')->where('status', 'submitted_to_ceo')->get();
@@ -18,9 +18,7 @@ class NeedController extends Controller
     // Form tambah kebutuhan (Add)
     public function create($event_id)
     {
-        if (!auth()->check() || auth()->user()->role !== 'PM') {
-            abort(403, 'Unauthorized');
-        }
+        $this->authorizePM();
         $event = Events::findOrFail($event_id);
         return view('needs.create', compact('event'));
     }
@@ -28,29 +26,26 @@ class NeedController extends Controller
     // Simpan kebutuhan baru (Store)
     public function store(Request $request)
     {
-        if (!auth()->check() || auth()->user()->role !== 'PM') {
-            abort(403, 'Unauthorized');
-        }
-        $request->validate([
+        $this->authorizePM();
+        $validated = $request->validate([
             'event_id' => 'required|exists:events,id',
-            'description' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'category' => 'required|string',
+            'description' => 'required|string',
         ]);
 
-        Need::create([
-            'event_id' => $request->event_id,
-            'description' => $request->description,
-            'status' => 'draft',
-        ]);
+        $validated['status'] = 'draft';
 
-        return redirect()->route('events.show', $request->event_id)->with('success', 'Kebutuhan berhasil ditambahkan!');
+        Need::create($validated);
+
+        return redirect()->route('events.show', $request->event_id)
+            ->with('success', 'Kebutuhan berhasil ditambahkan!');
     }
 
     // Form edit kebutuhan (Edit)
     public function edit($id)
     {
-        if (!auth()->check() || auth()->user()->role !== 'PM') {
-            abort(403, 'Unauthorized');
-        }
+        $this->authorizePM();
         $need = Need::findOrFail($id);
         return view('needs.edit', compact('need'));
     }
@@ -58,31 +53,32 @@ class NeedController extends Controller
     // Update kebutuhan (Update)
     public function update(Request $request, $id)
     {
-        if (!auth()->check() || auth()->user()->role !== 'PM') {
-            abort(403, 'Unauthorized');
-        }
-        $request->validate([
-            'description' => 'required|string|max:255',
+        $this->authorizePM();
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string',
+            'description' => 'required|string',
+            'status' => 'required|string',
+            'approval_notes' => 'nullable|string',
         ]);
 
         $need = Need::findOrFail($id);
-        $need->description = $request->description;
-        $need->save();
+        $need->update($validated);
 
-        return redirect()->route('events.show', $need->event_id)->with('success', 'Kebutuhan berhasil diupdate!');
+        return redirect()->route('events.show', $need->event_id)
+            ->with('success', 'Kebutuhan berhasil diupdate!');
     }
 
     // Hapus kebutuhan (Delete)
     public function destroy($id)
     {
-        if (!auth()->check() || auth()->user()->role !== 'PM') {
-            abort(403, 'Unauthorized');
-        }
+        $this->authorizePM();
         $need = Need::findOrFail($id);
         $event_id = $need->event_id;
         $need->delete();
 
-        return redirect()->route('events.show', $event_id)->with('success', 'Kebutuhan berhasil dihapus!');
+        return redirect()->route('events.show', $event_id)
+            ->with('success', 'Kebutuhan berhasil dihapus!');
     }
 
     // Approve kebutuhan oleh CEO
@@ -103,5 +99,13 @@ class NeedController extends Controller
         $need->approval_notes = $request->notes;
         $need->save();
         return back();
+    }
+
+    // Helper: hanya PM yang boleh akses
+    private function authorizePM()
+    {
+        if (!auth()->check() || auth()->user()->role !== 'PM') {
+            abort(403, 'Unauthorized');
+        }
     }
 }

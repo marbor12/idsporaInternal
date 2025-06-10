@@ -8,7 +8,7 @@ class Need extends Model
 {
     protected $table = 'needs'; 
     protected $fillable = [
-        'event_id', 'description', 'status', 'approval_notes', 
+        'event_id', 'title', 'category', 'description', 'status', 'approval_notes', 
     ];
 
     public function event()
