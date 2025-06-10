@@ -15,8 +15,9 @@ class EventController extends Controller
         $currentDate = date('Y-m-d');
         $upcomingEvents = $events->where('date', '>', $currentDate);
         $pastEvents = $events->where('date', '<=', $currentDate);
+        $thisMonth = $events->where('month', '<=', $currentDate);
 
-        return view('events.read', compact('upcomingEvents', 'pastEvents'));
+        return view('events.read', compact('events', 'upcomingEvents', 'pastEvents', 'thisMonth'));
     }
 
     // Menampilkan form untuk membuat event baru (hanya PM)
