@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Events;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -15,7 +16,13 @@ class EventController extends Controller
         $currentDate = date('Y-m-d');
         $upcomingEvents = $events->where('date', '>', $currentDate);
         $pastEvents = $events->where('date', '<=', $currentDate);
-        $thisMonth = $events->where('month', '<=', $currentDate);
+        // $thisMonth = $events->where('month', '<=', $currentDate);
+        // Ambil bulan dan tahun sekarang
+        $now = Carbon::now();
+        $thisMonth = $events->filter(function ($event) use ($now) {
+            return Carbon::parse($event->date)->month === $now->month
+                && Carbon::parse($event->date)->year === $now->year;
+        });
 
         return view('events.read', compact('events', 'upcomingEvents', 'pastEvents', 'thisMonth'));
     }

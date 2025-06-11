@@ -59,7 +59,7 @@
                             required>
                             <option value="pending" {{ $task->status === 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="in_progress" {{ $task->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                            <option value="done" {{ $task->status === 'done' ? 'selected' : '' }}>Done</option>
+                            <option value="completed" {{ $task->status === 'completed' ? 'selected' : '' }}>Completed</option>
                         </select>
                     </div>
 
