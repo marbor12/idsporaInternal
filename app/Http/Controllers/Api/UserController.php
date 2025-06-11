@@ -21,7 +21,7 @@ class UserController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:PM,CEO,COO,CFO',
+            'role' => 'required|in:PM,CEO,COO,CFO, staff',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -44,7 +44,7 @@ class UserController extends Controller
             'name' => 'sometimes|string',
             'email' => 'sometimes|email|unique:users,email,' . $user->id,
             'password' => 'sometimes|string|min:6',
-            'role' => 'sometimes|in:PM,CEO,COO,CFO',
+            'role' => 'sometimes|in:PM,CEO,COO,CFO,staff',
         ]);
 
         if (isset($validated['password'])) {

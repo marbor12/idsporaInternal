@@ -6,13 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Need extends Model
 {
-    protected $table = 'needs'; 
+    protected $table = 'needs';
     protected $fillable = [
-        'event_id', 'title', 'category', 'description', 'status', 'approval_notes', 
+        'event_id',
+        'title',
+        'category',
+        'description',
+        'status',
+        'approval_notes',
     ];
 
     public function event()
     {
         return $this->belongsTo(Events::class, 'event_id');
+    }
+
+    public function task()
+    {
+        return $this->hasOne(\App\Models\Tasks::class, 'need_id');
     }
 }

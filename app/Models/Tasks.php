@@ -17,6 +17,7 @@ class Tasks extends Model
         'due_date',
         'status',
         'approval_status', 
+        'need_id',
     ];
 
     // Relasi opsional
@@ -30,5 +31,10 @@ class Tasks extends Model
     public function event()
     {
         return $this->belongsTo(Events::class);
+    }
+
+    public function need()
+    {
+        return $this->belongsTo(Need::class, 'need_id');
     }
 }

@@ -30,7 +30,7 @@
                         $stats = [
                             [
                                 'label' => 'Total Events',
-                                'count' => count($upcomingEvents) + count($pastEvents),
+                                'count' => count($events),
                                 'color' => 'purple',
                                 'icon' => '<path d="M8 2v4M16 2v4M3 10h18M7 21h10a2 2 0 002-2V8a2 2 0 00-2-2H7a2 2 0 00-2 2v11a2 2 0 002 2z" />'
                             ],
@@ -48,9 +48,7 @@
                             ],
                             [
                                 'label' => 'This Month',
-                                'count' => collect($upcomingEvents)->filter(function ($event) {
-                                    return \Carbon\Carbon::parse($event['date'])->month === now()->month;
-                                })->count(),
+                                'count' => count($thisMonth),
                                 'color' => 'green',
                                 'icon' => '<rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />'
                             ],
