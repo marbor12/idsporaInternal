@@ -92,7 +92,7 @@ class TasksController extends Controller
     // CEO: Approve task (jika ada approval manual)
     public function approve($id)
     {
-        if (strtolower(auth()->user()->role) !== 'ceo') {
+        if (strtolower(auth()->user()->role) !== 'COO') {
             abort(403, 'Unauthorized');
         }
 
@@ -106,7 +106,7 @@ class TasksController extends Controller
     // CEO: Reject task (jika ada approval manual)
     public function reject($id)
     {
-        if (strtolower(auth()->user()->role) !== 'ceo') {
+        if (strtolower(auth()->user()->role) !== 'COO') {
             abort(403, 'Unauthorized');
         }
 

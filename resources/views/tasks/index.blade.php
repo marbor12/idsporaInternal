@@ -123,7 +123,7 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:underline">Delete</button>
                                             </form>
-                                        @elseif(Auth::check() && Auth::user()->role === 'CEO')
+                                        @elseif(Auth::check() && Auth::user()->role === 'COO')
                                             @if($task->approval_status === 'waiting')
                                                 <form action="{{ route('tasks.approve', $task->id) }}" method="POST" class="inline"
                                                     style="display:inline;">
