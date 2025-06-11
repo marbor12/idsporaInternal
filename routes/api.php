@@ -18,8 +18,17 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::apiResource('events', EventController::class)->middleware('auth:sanctum');
-Route::apiResource('finance', FinanceController::class)->middleware('auth:sanctum');
-
+// Route::apiResource('finance', FinanceController::class)->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function() {
+    Route::prefix('finance')->group(function () {
+        Route::get('/budgets', [FinanceController::class, 'index']);
+        Route::post('/budgets', [FinanceController::class, 'store']);
+        Route::put('/budgets/{id}', [FinanceController::class, 'update']);
+        Route::get('/budgets/{id}', [FinanceController::class, 'show']);
+        Route::delete('/budgets/{id}', [FinanceController::class, 'destroy']);
+    });
+    Route::post('/logout', [LoginController::class, 'logout']);
+});
 // Route::prefix('events')->group(function () {
 //     Route::get('/', [EventController::class, 'index']);
 //     Route::post('/', [EventController::class, 'store']);

@@ -17,6 +17,12 @@ class TasksController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->user()->role !== 'COO') {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Unauthorized. Only COO can create tasks.'
+            ], 403);
+        }
         $validated = $request->validate([
             'title'=>'required|string',
             'description'=>'required|string',
@@ -41,6 +47,12 @@ class TasksController extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($request->user()->role !== 'COO') {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Unauthorized. Only COO can update tasks.'
+            ], 403);
+        }
         $task = Tasks::find($id);
         if (!$task) {
             return response()->json(['message' => 'Task not found'], 404);

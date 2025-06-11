@@ -26,6 +26,18 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->user()->role !== 'PM') {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Unauthorized. Only PM can create events.'
+            ], 403);
+        }
+        if ($request->user()->role !== 'PM') {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Unauthorized. Only PM can create events.'
+            ], 403);
+        }
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'date' => 'required|date',
@@ -49,6 +61,12 @@ class EventController extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($request->user()->role !== 'PM') {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Unauthorized. Only PM can update events.'
+            ], 403);
+        }
         $event = Events::find($id);
         if (!$event) {
             return response()->json(['message' => 'Event not found.'], 404);
