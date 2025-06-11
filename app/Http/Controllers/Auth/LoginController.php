@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserResource;
 
 class LoginController extends Controller
 {
@@ -13,7 +14,7 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    public function __invoke(Request $request)
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -21,22 +22,37 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            // Semua role redirect ke dashboard
-            return redirect()->intended('/dashboard');
+            $user = Auth::user();
+            // Generate token (jika pakai Sanctum)
+            $token = $user->createToken('api-token')->plainTextToken;
+            return response()->json([
+                'user' => $user,
+                'token' => $token,
+            ]);
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+        return response()->json([
+            'message' => 'Email atau password salah.'
+        ], 401);
     }
 
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/login');
-    }
+
+    //punya copilot
+    // public function logout(Request $request)
+    // {
+    //     $user = $request->user();
+    //     if ($user) {
+    //         $user->currentAccessToken()->delete();
+    //     }
+    //     return response()->json(['message' => 'Logged out']);
+    // }
+
+    //punya step
+    // public function logout(Request $request)
+    // {
+    //     Auth::logout();
+    //     $request->session()->invalidate();
+    //     $request->session()->regenerateToken();
+    //     return redirect('/login');
+    // }
 }

@@ -6,15 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Budget extends Model
 {
-    protected $fillable = ['event_id', 'status'];
+    protected $primaryKey = 'id';
+    protected $fillable = ['event_id'];
 
     public function details()
     {
-        return $this->hasMany(BudgetDetail::class);
+        return $this->hasMany(BudgetDetail::class,"budget_id", "id");
     }
 
-    public function requests()
-    {
-        return $this->hasMany(Request::class);
-    }
 }
