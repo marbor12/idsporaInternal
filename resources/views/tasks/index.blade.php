@@ -7,7 +7,7 @@
             <div class="max-w-6xl mx-auto">
                 <div class="flex justify-between items-center mb-4">
                     <h1 class="text-2xl font-bold mb-4">Task Page</h1>
-                    @if(Auth::check() && strtolower(Auth::user()->role) === 'coo')
+                    <!-- @if(Auth::check() && strtolower(Auth::user()->role) === 'coo')
                         <a href="{{ route('tasks.create') }}">
                             <button class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-md flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -17,7 +17,7 @@
                                 New Task
                             </button>
                         </a>
-                    @endif
+                    @endif -->
                 </div>
 
                 {{-- Flash Message --}}
@@ -123,7 +123,7 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:underline">Delete</button>
                                             </form>
-                                        @elseif(Auth::check() && Auth::user()->role === 'COO')
+                                        @elseif(Auth::check() && Auth::user()->role === 'CEO')
                                             @if($task->approval_status === 'waiting')
                                                 <form action="{{ route('tasks.approve', $task->id) }}" method="POST" class="inline"
                                                     style="display:inline;">
