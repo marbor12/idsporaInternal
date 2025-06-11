@@ -9,60 +9,55 @@ use App\Http\Resources\TasksResource;
 
 class TasksController extends Controller
 {
+    // List semua task yang sudah di-approve CEO
     public function index()
     {
         $tasks = Tasks::where('approval_status', 'approved')->get();
-        return response()->json(["data" => $tasks]);
+        return TasksResource::collection($tasks);
     }
 
+    // Nonaktifkan pembuatan task manual
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title'=>'required|string',
-            'description'=>'required|string',
-            'event_id'=>'required|exists:events,id',
-            'assigned_to'=>'required|exists:users,id',
-            'due_date'=>'nullable|date',
-            'status'=>'nullable|in:pending,in_progress,completed',
-        ]);
-
-        $task = Tasks::create($validated);
-
-        return response()->json($task, 201);
+        return response()->json(['message' => 'Manual task creation is not allowed.'], 403);
     }
 
-
+    // Detail task
     public function show($id)
-{
-    $task = Tasks::find($id);
-    if (!$task) return response()->json(['message' => 'Task not found'], 404);
-    return new TasksResource($task);
-}
-
-    public function update(Request $request, $id)
     {
         $task = Tasks::find($id);
         if (!$task) {
             return response()->json(['message' => 'Task not found'], 404);
         }
+        return new TasksResource($task);
+    }
+
+    // Update task (hanya COO)
+    public function update(Request $request, $id)
+    {
+
+        $task = Tasks::find($id);
+        if (!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
+
         $validated = $request->validate([
-            'title'=>'sometimes|required|string',
-            'description'=>'sometimes|required|string',
-            'event_id'=>'sometimes|required|exists:events,id',
-            'assigned_to'=>'sometimes|required|exists:users,id',
-            'due_date'=>'sometimes|nullable|date',
-            'status'=>'sometimes|nullable|in:pending,in_progress,completed',
+            'title' => 'sometimes|required|string',
+            'description' => 'sometimes|nullable|string',
+            'event_id' => 'sometimes|required|exists:events,id',
+            'assigned_to' => 'sometimes|required|exists:users,id',
+            'due_date' => 'sometimes|required|date',
+            'status' => 'sometimes|required|string',
         ]);
 
         $task->update($validated);
-        return response()->json($task);
+        return new TasksResource($task);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Hapus task (hanya COO)
+    public function destroy($id)
     {
+
         $task = Tasks::find($id);
         if (!$task) {
             return response()->json(['message' => 'Task not found'], 404);
@@ -70,5 +65,31 @@ class TasksController extends Controller
 
         $task->delete();
         return response()->json(['message' => 'Task deleted successfully']);
+    }
+
+    public function approve($id)
+    {
+        $task = Tasks::find($id);
+        if (!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
+
+        $task->approval_status = 'approved';
+        $task->save();
+
+        return new TasksResource($task);
+    }
+
+    public function reject($id)
+    {
+        $task = Tasks::find($id);
+        if (!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
+
+        $task->approval_status = 'rejected';
+        $task->save();
+
+        return new TasksResource($task);
     }
 }

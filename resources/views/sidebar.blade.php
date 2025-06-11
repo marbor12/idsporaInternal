@@ -19,12 +19,12 @@
                         class="block px-4 py-2 rounded {{ request()->routeIs('tasks.*') ? 'bg-gray-900 text-white' : 'hover:bg-gray-100' }}">
                         Tasks
                     </a>
-                    @if(Auth::check() && Auth::user()->role === 'coo')
+                    <!-- @if(Auth::check() && Auth::user()->role === 'coo')
                         <a href="{{ route('tasks.create') }}"
                             class="block ml-6 px-2 py-1 text-blue-600 hover:underline text-sm">
                             + Buat Task Baru
                         </a>
-                    @endif
+                    @endif -->
                 </li>
                 <li>
                     <a href="{{ route('events.index') }}"

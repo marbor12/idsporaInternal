@@ -12,7 +12,9 @@ class TasksController extends Controller
     // COO dan CEO bisa melihat semua task yang sudah di-approve CEO
     public function index()
     {
-        $tasks = Tasks::where('approval_status', 'approved')->get();
+        $tasks = Tasks::with(['event', 'assignedUser'])
+            ->where('approval_status', 'approved')
+            ->get();
         return view('tasks.index', compact('tasks'));
     }
 
