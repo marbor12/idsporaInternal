@@ -19,39 +19,12 @@ class TasksController extends Controller
     // Nonaktifkan pembuatan task manual
     public function store(Request $request)
     {
-<<<<<<< HEAD
-        if ($request->user()->role !== 'COO') {
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'Unauthorized. Only COO can create tasks.'
-            ], 403);
-        }
-        $validated = $request->validate([
-            'title'=>'required|string',
-            'description'=>'required|string',
-            'event_id'=>'required|exists:events,id',
-            'assigned_to'=>'required|exists:users,id',
-            'due_date'=>'nullable|date',
-            'status'=>'nullable|in:pending,in_progress,completed',
-        ]);
-
-        $task = Tasks::create($validated);
-
-        return response()->json($task, 201);
-=======
         return response()->json(['message' => 'Manual task creation is not allowed.'], 403);
->>>>>>> origin/task
     }
 
     // Detail task
     public function show($id)
     {
-        if ($request->user()->role !== 'COO') {
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'Unauthorized. Only COO can update tasks.'
-            ], 403);
-        }
         $task = Tasks::find($id);
         if (!$task) {
             return response()->json(['message' => 'Task not found'], 404);
@@ -59,9 +32,12 @@ class TasksController extends Controller
         return new TasksResource($task);
     }
 
-    // Update task (hanya COO)
+    // Update task
     public function update(Request $request, $id)
     {
+        if (auth()->user()->role !== 'COO') {
+            return response()->json(['message' => 'Unauthorized. Only COO can update tasks.'], 403);
+        }
 
         $task = Tasks::find($id);
         if (!$task) {
@@ -84,6 +60,9 @@ class TasksController extends Controller
     // Hapus task (hanya COO)
     public function destroy($id)
     {
+        if (auth()->user()->role !== 'COO') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
         $task = Tasks::find($id);
         if (!$task) {
@@ -94,6 +73,7 @@ class TasksController extends Controller
         return response()->json(['message' => 'Task deleted successfully']);
     }
 
+    // Approve task
     public function approve($id)
     {
         $task = Tasks::find($id);
@@ -107,6 +87,7 @@ class TasksController extends Controller
         return new TasksResource($task);
     }
 
+    // Reject task
     public function reject($id)
     {
         $task = Tasks::find($id);

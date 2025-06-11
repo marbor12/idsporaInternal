@@ -23,36 +23,16 @@ class LoginController extends Controller
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
-<<<<<<< HEAD
             'user' => $user,
-=======
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-            ],
->>>>>>> origin/task
             'token' => $token,
         ]);
     }
 
-<<<<<<< HEAD
     public function logout (Request $request)
     {
         $user = $request->user();
         $user->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logged out successfully']);
-=======
-    public function logout(Request $request)
-    {
-        $user = $request->user();
-        if ($user && $user->currentAccessToken()) {
-            $user->currentAccessToken()->delete();
-            return response()->json(['message' => 'Logged out successfully']);
-        }
-        return response()->json(['message' => 'Not authenticated'], 401);
->>>>>>> origin/task
     }
 }
