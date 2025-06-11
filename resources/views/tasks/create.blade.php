@@ -1,4 +1,4 @@
-@extends('app')
+<!-- @extends('app')
 
 @section('content')
 <div class="flex h-screen bg-gray-50">
@@ -70,4 +70,4 @@
         </div>
     </div>
 </div>
-@endsection
+@endsection -->

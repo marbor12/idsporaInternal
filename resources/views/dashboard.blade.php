@@ -67,14 +67,14 @@
                 </div>
 
                                 <!-- COO: Tombol Buat Task Baru -->
-                @if(Auth::check() && Auth::user()->role === 'coo')
+                <!-- @if(Auth::check() && Auth::user()->role === 'coo')
                     <div class="mb-4">
                         <a href="{{ route('tasks.create') }}"
                            class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-semibold">
                             + Buat Task Baru
                         </a>
                     </div>
-                @endif
+                @endif -->
                 
                 <!-- PM: Tombol Buat Event Baru -->
                 @if(Auth::check() && Auth::user()->role === 'pm')
